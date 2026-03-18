@@ -1,10 +1,1372 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-<title>
-MG
-</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INKWELL — Modern Blog</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0e0d0b;
+    --paper: #f5f2eb;
+    --cream: #ede9df;
+    --rust: #c2421f;
+    --muted: #8a8374;
+    --line: #d6d0c4;
+    --white: #fff;
+    --serif: 'Playfair Display', Georgia, serif;
+    --sans: 'DM Sans', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE TEXTURE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 9999;
+    opacity: .5;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--cream); }
+  ::-webkit-scrollbar-thumb { background: var(--rust); border-radius: 2px; }
+
+  /* ─── HEADER ─── */
+  header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+    padding: 0 5vw;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .logo {
+    font-family: var(--serif);
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .logo span {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: var(--rust);
+    border-radius: 50%;
+    margin-bottom: 2px;
+  }
+
+  nav { display: flex; align-items: center; gap: 32px; }
+
+  nav a {
+    font-size: 0.8rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color .2s;
+    cursor: pointer;
+  }
+  nav a:hover, nav a.active { color: var(--ink); }
+
+  .header-cta {
+    background: var(--ink);
+    color: var(--paper) !important;
+    padding: 8px 20px;
+    border-radius: 2px;
+    letter-spacing: 0.08em;
+    transition: background .2s !important;
+  }
+  .header-cta:hover { background: var(--rust) !important; color: var(--white) !important; }
+
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+  }
+  .hamburger span { display: block; width: 24px; height: 2px; background: var(--ink); transition: .3s; }
+
+  /* ─── HERO ─── */
+  .hero {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 60px 5vw 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+    min-height: calc(100vh - 64px);
+  }
+
+  .hero-text { animation: fadeUp .8s ease both; }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .hero-eyebrow::before {
+    content: '';
+    display: block;
+    width: 30px;
+    height: 1px;
+    background: var(--rust);
+  }
+
+  .hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.8rem, 5vw, 5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    margin-bottom: 24px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--rust);
+  }
+
+  .hero-desc {
+    font-size: 1.05rem;
+    color: var(--muted);
+    max-width: 420px;
+    margin-bottom: 36px;
+    line-height: 1.75;
+  }
+
+  .hero-actions { display: flex; gap: 16px; align-items: center; }
+
+  .btn-primary {
+    background: var(--rust);
+    color: var(--white);
+    border: none;
+    padding: 14px 32px;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background .2s, transform .15s;
+  }
+  .btn-primary:hover { background: var(--ink); transform: translateY(-1px); }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink);
+    border: 1px solid var(--line);
+    padding: 13px 28px;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: border-color .2s, color .2s;
+  }
+  .btn-ghost:hover { border-color: var(--ink); color: var(--rust); }
+
+  /* ─── HERO FEATURED CARD ─── */
+  .hero-featured {
+    animation: fadeUp .8s .15s ease both;
+    position: relative;
+  }
+
+  .featured-card {
+    background: var(--ink);
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    cursor: pointer;
+    transition: transform .3s;
+  }
+  .featured-card:hover { transform: translateY(-4px); }
+
+  .featured-img {
+    width: 100%;
+    aspect-ratio: 4/3;
+    object-fit: cover;
+    display: block;
+    filter: sepia(20%) contrast(1.05);
+    transition: transform .5s;
+  }
+  .featured-card:hover .featured-img { transform: scale(1.02); }
+
+  /* SVG placeholder for hero image */
+  .img-placeholder {
+    width: 100%;
+    aspect-ratio: 4/3;
+    background: linear-gradient(135deg, #1a1915 0%, #2e2b24 40%, #3d382e 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .img-placeholder::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 20px,
+      rgba(255,255,255,.02) 20px,
+      rgba(255,255,255,.02) 40px
+    );
+  }
+
+  .placeholder-text {
+    font-family: var(--serif);
+    font-size: 4rem;
+    font-weight: 900;
+    color: rgba(255,255,255,.06);
+    letter-spacing: -0.04em;
+    user-select: none;
+  }
+
+  .featured-meta {
+    padding: 24px 28px;
+    position: relative;
+  }
+
+  .tag {
+    display: inline-block;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+  .tag-rust { background: var(--rust); color: white; }
+  .tag-cream { background: rgba(245,242,235,.12); color: var(--cream); }
+  .tag-ink { background: var(--ink); color: var(--paper); border: 1px solid var(--line); }
+
+  .featured-title {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--paper);
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+
+  .featured-byline {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--muted);
+    font-size: 0.78rem;
+    letter-spacing: 0.04em;
+  }
+  .byline-dot { width: 3px; height: 3px; background: var(--muted); border-radius: 50%; }
+
+  /* ─── DECORATIVE TICKER ─── */
+  .ticker-wrap {
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+    padding: 12px 0;
+    background: var(--cream);
+  }
+
+  .ticker {
+    display: flex;
+    gap: 0;
+    white-space: nowrap;
+    animation: ticker 30s linear infinite;
+  }
+
+  .ticker-item {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .ticker-item::after {
+    content: '◆';
+    color: var(--rust);
+    font-size: 0.4rem;
+  }
+
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+  /* ─── SECTION WRAPPER ─── */
+  .section {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 80px 5vw;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 48px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3vw, 2.6rem);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1.1;
+  }
+
+  .view-all {
+    font-size: 0.78rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--rust);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    transition: gap .2s;
+    white-space: nowrap;
+  }
+  .view-all:hover { gap: 14px; }
+  .view-all::after { content: '→'; }
+
+  /* ─── POST GRID ─── */
+  .posts-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .post-card {
+    background: var(--white);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform .25s, box-shadow .25s;
+    position: relative;
+  }
+  .post-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 40px rgba(14,13,11,.1);
+    z-index: 1;
+  }
+
+  .post-img-wrap {
+    overflow: hidden;
+    position: relative;
+  }
+
+  .post-img-ph {
+    width: 100%;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .post-img-ph span {
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 900;
+    opacity: .18;
+    color: white;
+    user-select: none;
+  }
+
+  .post-card:hover .post-img-ph img,
+  .post-card:hover .post-img-ph { transform: scale(1.03); }
+
+  .post-img-ph { transition: transform .4s; }
+
+  .post-body { padding: 20px 22px 22px; }
+
+  .post-title {
+    font-family: var(--serif);
+    font-size: 1.05rem;
+    font-weight: 700;
+    line-height: 1.35;
+    color: var(--ink);
+    margin: 10px 0 8px;
+    transition: color .2s;
+  }
+  .post-card:hover .post-title { color: var(--rust); }
+
+  .post-excerpt {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.65;
+    margin-bottom: 16px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .post-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+    padding-top: 14px;
+    border-top: 1px solid var(--line);
+  }
+
+  .read-time { display: flex; align-items: center; gap: 5px; }
+  .read-time::before { content: '◷'; color: var(--rust); }
+
+  /* ─── FEATURED LONG READS ─── */
+  .long-reads { background: var(--ink); }
+  .long-reads .section { padding: 80px 5vw; }
+  .long-reads .section-title { color: var(--paper); }
+  .long-reads .section-label { color: var(--rust); }
+  .long-reads .section-header { border-bottom-color: rgba(255,255,255,.1); }
+
+  .long-reads-grid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr 1fr;
+    gap: 2px;
+  }
+
+  .lr-card {
+    background: rgba(255,255,255,.04);
+    border: 1px solid rgba(255,255,255,.08);
+    padding: 28px;
+    cursor: pointer;
+    transition: background .25s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .lr-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--rust);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .3s;
+  }
+  .lr-card:hover { background: rgba(255,255,255,.07); }
+  .lr-card:hover::before { transform: scaleX(1); }
+
+  .lr-card.big { grid-row: span 2; display: flex; flex-direction: column; justify-content: flex-end; }
+
+  .lr-number {
+    font-family: var(--serif);
+    font-size: 5rem;
+    font-weight: 900;
+    color: rgba(255,255,255,.06);
+    line-height: 1;
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    letter-spacing: -0.04em;
+  }
+
+  .lr-title {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--paper);
+    line-height: 1.3;
+    margin: 10px 0 10px;
+  }
+
+  .lr-card.big .lr-title {
+    font-size: 1.7rem;
+  }
+
+  .lr-excerpt {
+    font-size: 0.8rem;
+    color: rgba(245,242,235,.45);
+    line-height: 1.6;
+    margin-bottom: 14px;
+  }
+
+  .lr-meta {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(245,242,235,.35);
+    display: flex;
+    gap: 12px;
+  }
+
+  /* ─── SIDEBAR LAYOUT ─── */
+  .main-sidebar {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 60px;
+    align-items: start;
+  }
+
+  /* ─── ARTICLE LIST ─── */
+  .article-list { display: flex; flex-direction: column; gap: 0; }
+
+  .article-item {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 20px;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+    transition: opacity .2s;
+  }
+  .article-item:hover { opacity: .75; }
+  .article-item:first-child { border-top: 1px solid var(--line); }
+
+  .article-thumb {
+    width: 100px;
+    aspect-ratio: 1;
+    border-radius: 2px;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  .thumb-ph {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .thumb-ph span { font-family: var(--serif); font-size: 1.5rem; font-weight: 900; color: rgba(255,255,255,.25); }
+
+  .article-info { display: flex; flex-direction: column; justify-content: center; gap: 6px; }
+
+  .article-title {
+    font-family: var(--serif);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--ink);
+    transition: color .2s;
+  }
+  .article-item:hover .article-title { color: var(--rust); }
+
+  .article-meta {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex;
+    gap: 10px;
+  }
+
+  /* ─── SIDEBAR ─── */
+  .sidebar { position: sticky; top: 80px; }
+
+  .sidebar-widget {
+    margin-bottom: 40px;
+    padding-bottom: 40px;
+    border-bottom: 1px solid var(--line);
+  }
+  .sidebar-widget:last-child { border-bottom: none; }
+
+  .widget-title {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .widget-title::after { content: ''; flex: 1; height: 1px; background: var(--line); }
+
+  .search-wrap {
+    position: relative;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 12px 40px 12px 16px;
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .search-input:focus { border-color: var(--rust); }
+  .search-input::placeholder { color: var(--muted); }
+
+  .search-btn {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--muted);
+    font-size: 0.9rem;
+  }
+
+  .topics-list { display: flex; flex-wrap: wrap; gap: 8px; }
+
+  .topic-pill {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    background: var(--cream);
+    cursor: pointer;
+    transition: all .2s;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .topic-pill:hover, .topic-pill.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  .newsletter-form { display: flex; flex-direction: column; gap: 10px; }
+
+  .email-input {
+    padding: 11px 14px;
+    background: var(--cream);
+    border: 1px solid var(--line);
+    border-radius: 2px;
+    font-family: var(--sans);
+    font-size: 0.85rem;
+    color: var(--ink);
+    outline: none;
+    transition: border-color .2s;
+  }
+  .email-input:focus { border-color: var(--rust); }
+  .email-input::placeholder { color: var(--muted); }
+
+  .popular-list { display: flex; flex-direction: column; gap: 0; }
+
+  .popular-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    cursor: pointer;
+  }
+  .popular-item:last-child { border-bottom: none; }
+
+  .popular-num {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: var(--line);
+    line-height: 1;
+    flex-shrink: 0;
+    width: 24px;
+    transition: color .2s;
+  }
+  .popular-item:hover .popular-num { color: var(--rust); }
+
+  .popular-title {
+    font-size: 0.85rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--ink);
+    transition: color .2s;
+  }
+  .popular-item:hover .popular-title { color: var(--rust); }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 60px 5vw 30px;
+  }
+
+  .footer-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .footer-top {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 60px;
+    padding-bottom: 50px;
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    margin-bottom: 30px;
+  }
+
+  .footer-brand .logo { color: var(--paper); margin-bottom: 14px; display: inline-flex; }
+  .footer-brand p { font-size: 0.83rem; color: rgba(245,242,235,.45); line-height: 1.7; max-width: 280px; }
+
+  .footer-col-title {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--rust);
+    margin-bottom: 18px;
+  }
+
+  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .footer-links a {
+    font-size: 0.83rem;
+    color: rgba(245,242,235,.5);
+    text-decoration: none;
+    transition: color .2s;
+    cursor: pointer;
+  }
+  .footer-links a:hover { color: var(--paper); }
+
+  .footer-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(245,242,235,.3);
+  }
+
+  .social-links { display: flex; gap: 18px; }
+  .social-links a {
+    color: rgba(245,242,235,.3);
+    text-decoration: none;
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    transition: color .2s;
+  }
+  .social-links a:hover { color: var(--rust); }
+
+  /* ─── ANIMATIONS ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity .6s ease, transform .6s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ─── MOBILE NAV ─── */
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--ink);
+    z-index: 200;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 36px;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a {
+    font-family: var(--serif);
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--paper);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+    cursor: pointer;
+    transition: color .2s;
+  }
+  .mobile-nav a:hover { color: var(--rust); }
+  .mobile-close {
+    position: absolute;
+    top: 20px; right: 24px;
+    background: none; border: none;
+    font-size: 1.8rem; color: var(--paper);
+    cursor: pointer;
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1024px) {
+    .hero { grid-template-columns: 1fr; gap: 40px; min-height: auto; }
+    .posts-grid { grid-template-columns: 1fr 1fr; }
+    .long-reads-grid { grid-template-columns: 1fr 1fr; }
+    .lr-card.big { grid-row: span 1; }
+    .main-sidebar { grid-template-columns: 1fr; }
+    .sidebar { position: static; }
+    .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
+  }
+
+  @media (max-width: 640px) {
+    nav { display: none; }
+    .hamburger { display: flex; }
+    .hero { padding-top: 40px; }
+    .hero h1 { font-size: 2.4rem; }
+    .posts-grid { grid-template-columns: 1fr; }
+    .long-reads-grid { grid-template-columns: 1fr; }
+    .hero-actions { flex-direction: column; align-items: flex-start; }
+    .footer-top { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 14px; }
+  }
+</style>
 </head>
 <body>
-Welcome Azlan
+
+<!-- MOBILE NAV -->
+<div class="mobile-nav" id="mobileNav">
+  <button class="mobile-close" onclick="closeMobileNav()">✕</button>
+  <a onclick="closeMobileNav()">Stories</a>
+  <a onclick="closeMobileNav()">Topics</a>
+  <a onclick="closeMobileNav()">Writers</a>
+  <a onclick="closeMobileNav()">About</a>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <a class="logo" href="#"><span></span>INKWELL</a>
+    <nav>
+      <a class="active" onclick="">Stories</a>
+      <a onclick="">Topics</a>
+      <a onclick="">Writers</a>
+      <a onclick="">About</a>
+      <a class="header-cta" onclick="">Subscribe</a>
+    </nav>
+    <button class="hamburger" onclick="openMobileNav()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section>
+  <div class="hero">
+    <div class="hero-text">
+      <div class="hero-eyebrow">Featured this week</div>
+      <h1>Ideas worth <em>reading,</em> writing worth <em>sharing.</em></h1>
+      <p class="hero-desc">Discover thoughtful essays, sharp opinions, and stories that change how you see the world. Curated daily by writers who care.</p>
+      <div class="hero-actions">
+        <button class="btn-primary">Start Reading</button>
+        <button class="btn-ghost">Browse Topics</button>
+      </div>
+    </div>
+    <div class="hero-featured">
+      <div class="featured-card">
+        <div class="img-placeholder">
+          <div class="placeholder-text">ESSAY</div>
+        </div>
+        <div class="featured-meta">
+          <div><span class="tag tag-rust">Essay</span></div>
+          <div class="featured-title">The Attention Economy Has Already Won — Here's How to Fight Back</div>
+          <div class="featured-byline">
+            <span>Mara Osei</span>
+            <span class="byline-dot"></span>
+            <span>Mar 16</span>
+            <span class="byline-dot"></span>
+            <span>8 min read</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TICKER -->
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="ticker-item">Design & Culture</span>
+    <span class="ticker-item">Tech & Society</span>
+    <span class="ticker-item">Philosophy</span>
+    <span class="ticker-item">Science & Nature</span>
+    <span class="ticker-item">Creative Writing</span>
+    <span class="ticker-item">Politics</span>
+    <span class="ticker-item">Environment</span>
+    <span class="ticker-item">Mental Health</span>
+    <span class="ticker-item">Design & Culture</span>
+    <span class="ticker-item">Tech & Society</span>
+    <span class="ticker-item">Philosophy</span>
+    <span class="ticker-item">Science & Nature</span>
+    <span class="ticker-item">Creative Writing</span>
+    <span class="ticker-item">Politics</span>
+    <span class="ticker-item">Environment</span>
+    <span class="ticker-item">Mental Health</span>
+  </div>
+</div>
+
+<!-- LATEST POSTS -->
+<section class="section reveal">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Latest</div>
+      <h2 class="section-title">Fresh from the press</h2>
+    </div>
+    <a class="view-all">All stories</a>
+  </div>
+  <div class="posts-grid">
+
+    <div class="post-card">
+      <div class="post-img-wrap">
+        <div class="post-img-ph" style="background: linear-gradient(135deg,#1a2a3a,#2d4a6a);">
+          <span>TECH</span>
+        </div>
+      </div>
+      <div class="post-body">
+        <span class="tag tag-ink">Technology</span>
+        <div class="post-title">Why Every Developer Should Learn to Draw</div>
+        <p class="post-excerpt">Visual thinking is the hidden superpower that separates good engineers from truly great ones.</p>
+        <div class="post-footer">
+          <span>James Liu</span>
+          <span class="read-time">5 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-img-wrap">
+        <div class="post-img-ph" style="background: linear-gradient(135deg,#2a1a1a,#5a2e2e);">
+          <span>MIND</span>
+        </div>
+      </div>
+      <div class="post-body">
+        <span class="tag tag-rust">Psychology</span>
+        <div class="post-title">The Paradox of Choice Is Making Us Miserable</div>
+        <p class="post-excerpt">More options, more suffering. How infinite menus became our greatest modern torment.</p>
+        <div class="post-footer">
+          <span>Dr. Aisha Nkomo</span>
+          <span class="read-time">7 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-img-wrap">
+        <div class="post-img-ph" style="background: linear-gradient(135deg,#1a2a1a,#2d5a2e);">
+          <span>EARTH</span>
+        </div>
+      </div>
+      <div class="post-body">
+        <span class="tag tag-ink">Environment</span>
+        <div class="post-title">The Last Glacier Photographers</div>
+        <p class="post-excerpt">A group of artists racing against time to document what climate change is erasing forever.</p>
+        <div class="post-footer">
+          <span>Elina Kovac</span>
+          <span class="read-time">6 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-img-wrap">
+        <div class="post-img-ph" style="background: linear-gradient(135deg,#28201a,#5a4a30);">
+          <span>LIFE</span>
+        </div>
+      </div>
+      <div class="post-body">
+        <span class="tag tag-ink">Culture</span>
+        <div class="post-title">What Coffee Shop Culture Says About Modern Loneliness</div>
+        <p class="post-excerpt">We crowd into public spaces to be alone together — and that might be okay.</p>
+        <div class="post-footer">
+          <span>Tom Andreou</span>
+          <span class="read-time">4 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-img-wrap">
+        <div class="post-img-ph" style="background: linear-gradient(135deg,#1e1a2a,#3d306a);">
+          <span>SPACE</span>
+        </div>
+      </div>
+      <div class="post-body">
+        <span class="tag tag-rust">Science</span>
+        <div class="post-title">Are We Alone? The Evidence Is More Surprising Than You Think</div>
+        <p class="post-excerpt">Recent discoveries have fundamentally shifted what we thought we knew about life in the universe.</p>
+        <div class="post-footer">
+          <span>Prof. Yuki Tanaka</span>
+          <span class="read-time">9 min read</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="post-card">
+      <div class="post-img-wrap">
+        <div class="post-img-ph" style="background: linear-gradient(135deg,#1a1e28,#2a3a5a);">
+          <span>WORK</span>
+        </div>
+      </div>
+      <div class="post-body">
+        <span class="tag tag-ink">Work</span>
+        <div class="post-title">The Death of the Career Path (And Why That's Liberating)</div>
+        <p class="post-excerpt">Linear careers are over. What comes next might actually suit humans better.</p>
+        <div class="post-footer">
+          <span>Camille Portois</span>
+          <span class="read-time">6 min read</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- LONG READS -->
+<div class="long-reads">
+  <div class="section reveal">
+    <div class="section-header">
+      <div>
+        <div class="section-label">Deep Dives</div>
+        <h2 class="section-title">Long reads</h2>
+      </div>
+      <a class="view-all" style="color:var(--rust)">View all</a>
+    </div>
+    <div class="long-reads-grid">
+
+      <div class="lr-card big">
+        <div class="lr-number">01</div>
+        <span class="tag tag-rust">Philosophy</span>
+        <div class="lr-title">The Slow Death of Boredom and Why We Should Mourn It</div>
+        <p class="lr-excerpt">Before smartphones, boredom was the canvas on which imagination painted its greatest works. We've wiped that canvas clean — and we're only just starting to notice the cost.</p>
+        <div class="lr-meta">
+          <span>N. Abramowitz</span>
+          <span>24 min read</span>
+        </div>
+      </div>
+
+      <div class="lr-card">
+        <div class="lr-number">02</div>
+        <span class="tag tag-cream">Society</span>
+        <div class="lr-title">Post-Truth Was Always the Plan</div>
+        <p class="lr-excerpt">Tracing the deliberate architecture of confusion in modern political life.</p>
+        <div class="lr-meta"><span>R. Mensah</span><span>18 min</span></div>
+      </div>
+
+      <div class="lr-card">
+        <div class="lr-number">03</div>
+        <span class="tag tag-cream">Design</span>
+        <div class="lr-title">The Tyranny of Good Taste</div>
+        <p class="lr-excerpt">How aesthetic consensus became a new form of social control.</p>
+        <div class="lr-meta"><span>S. Hartmann</span><span>12 min</span></div>
+      </div>
+
+      <div class="lr-card">
+        <div class="lr-number">04</div>
+        <span class="tag tag-cream">Biology</span>
+        <div class="lr-title">Your Microbiome Is Running Your Life</div>
+        <p class="lr-excerpt">The 38 trillion bacteria inside you have more influence than you'd like to admit.</p>
+        <div class="lr-meta"><span>Dr. L. Fernandez</span><span>15 min</span></div>
+      </div>
+
+      <div class="lr-card">
+        <div class="lr-number">05</div>
+        <span class="tag tag-cream">History</span>
+        <div class="lr-title">The City That Reinvented Itself Every Century</div>
+        <p class="lr-excerpt">A 2,000-year urban story of collapse, adaptation, and radical reinvention.</p>
+        <div class="lr-meta"><span>P. Okonkwo</span><span>20 min</span></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- BROWSE + SIDEBAR -->
+<section class="section reveal">
+  <div class="section-header">
+    <div>
+      <div class="section-label">Browse</div>
+      <h2 class="section-title">More to explore</h2>
+    </div>
+  </div>
+  <div class="main-sidebar">
+
+    <!-- ARTICLE LIST -->
+    <div class="article-list">
+      <div class="article-item">
+        <div class="article-thumb"><div class="thumb-ph" style="background:linear-gradient(135deg,#c2421f,#7a2010)"><span>01</span></div></div>
+        <div class="article-info">
+          <span class="tag tag-rust" style="font-size:.6rem;padding:3px 8px;">Technology</span>
+          <div class="article-title">Open Source AI Models Are Changing Who Controls the Future</div>
+          <div class="article-meta"><span>Felix Nguyen</span><span>·</span><span>Mar 14</span><span>·</span><span>11 min</span></div>
+        </div>
+      </div>
+
+      <div class="article-item">
+        <div class="article-thumb"><div class="thumb-ph" style="background:linear-gradient(135deg,#2a4a2a,#1a2e1a)"><span>02</span></div></div>
+        <div class="article-info">
+          <span class="tag tag-ink" style="font-size:.6rem;padding:3px 8px;">Environment</span>
+          <div class="article-title">Rewilding Europe: How Nature Is Reclaiming Abandoned Land</div>
+          <div class="article-meta"><span>Ingrid Solberg</span><span>·</span><span>Mar 13</span><span>·</span><span>8 min</span></div>
+        </div>
+      </div>
+
+      <div class="article-item">
+        <div class="article-thumb"><div class="thumb-ph" style="background:linear-gradient(135deg,#2a2a4a,#1a1a2e)"><span>03</span></div></div>
+        <div class="article-info">
+          <span class="tag tag-ink" style="font-size:.6rem;padding:3px 8px;">Mental Health</span>
+          <div class="article-title">The Therapists Are Burning Out Too — Who Heals the Healers?</div>
+          <div class="article-meta"><span>Grace Obi-Williams</span><span>·</span><span>Mar 12</span><span>·</span><span>7 min</span></div>
+        </div>
+      </div>
+
+      <div class="article-item">
+        <div class="article-thumb"><div class="thumb-ph" style="background:linear-gradient(135deg,#4a2a1a,#2e1a0e)"><span>04</span></div></div>
+        <div class="article-info">
+          <span class="tag tag-rust" style="font-size:.6rem;padding:3px 8px;">Culture</span>
+          <div class="article-title">The Rise of the Anti-Influencer: Why Authenticity Is the New Flex</div>
+          <div class="article-meta"><span>Zara Patel</span><span>·</span><span>Mar 11</span><span>·</span><span>5 min</span></div>
+        </div>
+      </div>
+
+      <div class="article-item">
+        <div class="article-thumb"><div class="thumb-ph" style="background:linear-gradient(135deg,#1a3a4a,#0e2230)"><span>05</span></div></div>
+        <div class="article-info">
+          <span class="tag tag-ink" style="font-size:.6rem;padding:3px 8px;">Science</span>
+          <div class="article-title">Quantum Computing Just Passed a Milestone That Changes Everything</div>
+          <div class="article-meta"><span>Dr. H. Park</span><span>·</span><span>Mar 10</span><span>·</span><span>10 min</span></div>
+        </div>
+      </div>
+
+      <div class="article-item">
+        <div class="article-thumb"><div class="thumb-ph" style="background:linear-gradient(135deg,#3a2a1a,#5a3a1a)"><span>06</span></div></div>
+        <div class="article-info">
+          <span class="tag tag-ink" style="font-size:.6rem;padding:3px 8px;">History</span>
+          <div class="article-title">How a 17th-Century Plague Shaped the Modern Financial System</div>
+          <div class="article-meta"><span>Marco de Bruin</span><span>·</span><span>Mar 9</span><span>·</span><span>13 min</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+      <div class="sidebar-widget">
+        <div class="widget-title">Search</div>
+        <div class="search-wrap">
+          <input class="search-input" type="text" placeholder="Search stories…">
+          <button class="search-btn">⌕</button>
+        </div>
+      </div>
+
+      <div class="sidebar-widget">
+        <div class="widget-title">Topics</div>
+        <div class="topics-list">
+          <span class="topic-pill active">All</span>
+          <span class="topic-pill">Technology</span>
+          <span class="topic-pill">Culture</span>
+          <span class="topic-pill">Science</span>
+          <span class="topic-pill">Philosophy</span>
+          <span class="topic-pill">Health</span>
+          <span class="topic-pill">Design</span>
+          <span class="topic-pill">Politics</span>
+        </div>
+      </div>
+
+      <div class="sidebar-widget">
+        <div class="widget-title">Newsletter</div>
+        <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;line-height:1.65;">Hand-picked reads every Sunday. No spam, ever.</p>
+        <div class="newsletter-form">
+          <input class="email-input" type="email" placeholder="you@example.com">
+          <button class="btn-primary" style="font-size:.75rem;padding:11px 20px;">Subscribe Free</button>
+        </div>
+      </div>
+
+      <div class="sidebar-widget">
+        <div class="widget-title">Trending</div>
+        <div class="popular-list">
+          <div class="popular-item">
+            <span class="popular-num">01</span>
+            <span class="popular-title">The Attention Economy Has Already Won — Here's How to Fight Back</span>
+          </div>
+          <div class="popular-item">
+            <span class="popular-num">02</span>
+            <span class="popular-title">Open Source AI Models Are Changing Who Controls the Future</span>
+          </div>
+          <div class="popular-item">
+            <span class="popular-num">03</span>
+            <span class="popular-title">The Slow Death of Boredom and Why We Should Mourn It</span>
+          </div>
+          <div class="popular-item">
+            <span class="popular-num">04</span>
+            <span class="popular-title">What Coffee Shop Culture Says About Modern Loneliness</span>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="logo"><span></span>INKWELL</a>
+        <p>A publication for the curious mind. Stories that challenge, essays that provoke, ideas that endure.</p>
+      </div>
+      <div>
+        <div class="footer-col-title">Explore</div>
+        <ul class="footer-links">
+          <li><a>Latest Stories</a></li>
+          <li><a>Long Reads</a></li>
+          <li><a>Topics</a></li>
+          <li><a>Featured Writers</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <ul class="footer-links">
+          <li><a>About</a></li>
+          <li><a>Careers</a></li>
+          <li><a>Advertise</a></li>
+          <li><a>Press Kit</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <ul class="footer-links">
+          <li><a>Privacy Policy</a></li>
+          <li><a>Terms of Use</a></li>
+          <li><a>Cookie Settings</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Inkwell Publication. All rights reserved.</span>
+      <div class="social-links">
+        <a>Twitter</a>
+        <a>Instagram</a>
+        <a>LinkedIn</a>
+        <a>RSS</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // ─── MOBILE NAV ───
+  function openMobileNav() { document.getElementById('mobileNav').classList.add('open'); }
+  function closeMobileNav() { document.getElementById('mobileNav').classList.remove('open'); }
+
+  // ─── SCROLL REVEAL ───
+  const revealEls = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.08 });
+  revealEls.forEach(el => observer.observe(el));
+
+  // ─── TOPIC PILLS ───
+  document.querySelectorAll('.topic-pill').forEach(pill => {
+    pill.addEventListener('click', function() {
+      document.querySelectorAll('.topic-pill').forEach(p => p.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+
+  // ─── SEARCH FOCUS EFFECT ───
+  const searchInput = document.querySelector('.search-input');
+  if (searchInput) {
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        searchInput.style.borderColor = 'var(--rust)';
+        setTimeout(() => searchInput.style.borderColor = '', 600);
+      }
+    });
+  }
+
+  // ─── NEWSLETTER SUBMIT ───
+  const emailInput = document.querySelector('.email-input');
+  document.querySelector('.newsletter-form .btn-primary')?.addEventListener('click', function() {
+    const val = emailInput?.value?.trim();
+    if (val && val.includes('@')) {
+      this.textContent = '✓ Subscribed!';
+      this.style.background = '#2a6a2a';
+      emailInput.value = '';
+      setTimeout(() => { this.textContent = 'Subscribe Free'; this.style.background = ''; }, 3000);
+    } else {
+      emailInput.style.borderColor = 'var(--rust)';
+      setTimeout(() => emailInput.style.borderColor = '', 1000);
+    }
+  });
+
+  // ─── STAGGERED CARD ENTRANCE ───
+  const cards = document.querySelectorAll('.post-card, .lr-card, .article-item');
+  cards.forEach((card, i) => {
+    card.style.animationDelay = `${i * 0.06}s`;
+    card.classList.add('reveal');
+    observer.observe(card);
+  });
+</script>
 </body>
 </html>
