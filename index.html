@@ -1,1269 +1,1614 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="si">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>INKWELL — Modern Blog</title>
+<title>PixCraft AI — Professional Photo Studio</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Sinhala:wght@300;400;600;700;900&family=Noto+Sans+Tamil:wght@300;400;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
 <style>
-  :root {
-    --ink: #0e0d0b;
-    --paper: #f5f2eb;
-    --cream: #ede9df;
-    --rust: #c2421f;
-    --muted: #8a8374;
-    --line: #d6d0c4;
-    --white: #fff;
-    --serif: 'Playfair Display', Georgia, serif;
-    --sans: 'DM Sans', sans-serif;
-    --mono: 'DM Mono', monospace;
-  }
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-weight: 400;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
-
-  /* ─── NOISE TEXTURE OVERLAY ─── */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
-    pointer-events: none;
-    z-index: 9999;
-    opacity: .5;
-  }
-
-  /* ─── SCROLLBAR ─── */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: var(--cream); }
-  ::-webkit-scrollbar-thumb { background: var(--rust); border-radius: 2px; }
-
-  /* ─── HEADER ─── */
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: var(--paper);
-    border-bottom: 1px solid var(--line);
-    padding: 0 5vw;
-  }
-
-  .header-inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 64px;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
-  .logo {
-    font-family: var(--serif);
-    font-weight: 900;
-    font-size: 1.5rem;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .logo span {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    background: var(--rust);
-    border-radius: 50%;
-    margin-bottom: 2px;
-  }
-
-  nav { display: flex; align-items: center; gap: 32px; }
-
-  nav a {
-    font-size: 0.8rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--muted);
-    text-decoration: none;
-    transition: color .2s;
-    cursor: pointer;
-  }
-  nav a:hover, nav a.active { color: var(--ink); }
-
-  .header-cta {
-    background: var(--ink);
-    color: var(--paper) !important;
-    padding: 8px 20px;
-    border-radius: 2px;
-    letter-spacing: 0.08em;
-    transition: background .2s !important;
-  }
-  .header-cta:hover { background: var(--rust) !important; color: var(--white) !important; }
-
-  .hamburger {
-    display: none;
-    flex-direction: column;
-    gap: 5px;
-    background: none;
-    border: none;
-    cursor: pointer;
-    padding: 4px;
-  }
-  .hamburger span { display: block; width: 24px; height: 2px; background: var(--ink); transition: .3s; }
-
-  /* ─── HERO ─── */
-  .hero {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 60px 5vw 40px;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 80px;
-    align-items: center;
-    min-height: calc(100vh - 64px);
-  }
-
-  .hero-text { animation: fadeUp .8s ease both; }
-
-  .hero-eyebrow {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--rust);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  .hero-eyebrow::before {
-    content: '';
-    display: block;
-    width: 30px;
-    height: 1px;
-    background: var(--rust);
-  }
-
-  .hero h1 {
-    font-family: var(--serif);
-    font-size: clamp(2.8rem, 5vw, 5rem);
-    font-weight: 900;
-    line-height: 1.05;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-    margin-bottom: 24px;
-  }
-
-  .hero h1 em {
-    font-style: italic;
-    color: var(--rust);
-  }
-
-  .hero-desc {
-    font-size: 1.05rem;
-    color: var(--muted);
-    max-width: 420px;
-    margin-bottom: 36px;
-    line-height: 1.75;
-  }
-
-  .hero-actions { display: flex; gap: 16px; align-items: center; }
-
-  .btn-primary {
-    background: var(--rust);
-    color: var(--white);
-    border: none;
-    padding: 14px 32px;
-    font-family: var(--sans);
-    font-size: 0.85rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 2px;
-    transition: background .2s, transform .15s;
-  }
-  .btn-primary:hover { background: var(--ink); transform: translateY(-1px); }
-
-  .btn-ghost {
-    background: transparent;
-    color: var(--ink);
-    border: 1px solid var(--line);
-    padding: 13px 28px;
-    font-family: var(--sans);
-    font-size: 0.85rem;
-    font-weight: 500;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    cursor: pointer;
-    border-radius: 2px;
-    transition: border-color .2s, color .2s;
-  }
-  .btn-ghost:hover { border-color: var(--ink); color: var(--rust); }
-
-  /* ─── HERO FEATURED CARD ─── */
-  .hero-featured {
-    animation: fadeUp .8s .15s ease both;
-    position: relative;
-  }
-
-  .featured-card {
-    background: var(--ink);
-    border-radius: 4px;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-    transition: transform .3s;
-  }
-  .featured-card:hover { transform: translateY(-4px); }
-
-  .featured-img {
-    width: 100%;
-    aspect-ratio: 4/3;
-    object-fit: cover;
-    display: block;
-    filter: sepia(20%) contrast(1.05);
-    transition: transform .5s;
-  }
-  .featured-card:hover .featured-img { transform: scale(1.02); }
-
-  /* SVG placeholder for hero image */
-  .img-placeholder {
-    width: 100%;
-    aspect-ratio: 4/3;
-    background: linear-gradient(135deg, #1a1915 0%, #2e2b24 40%, #3d382e 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
-  .img-placeholder::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: repeating-linear-gradient(
-      45deg,
-      transparent,
-      transparent 20px,
-      rgba(255,255,255,.02) 20px,
-      rgba(255,255,255,.02) 40px
-    );
-  }
-
-  .placeholder-text {
-    font-family: var(--serif);
-    font-size: 4rem;
-    font-weight: 900;
-    color: rgba(255,255,255,.06);
-    letter-spacing: -0.04em;
-    user-select: none;
-  }
-
-  .featured-meta {
-    padding: 24px 28px;
-    position: relative;
-  }
-
-  .tag {
-    display: inline-block;
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 2px;
-    margin-bottom: 12px;
-    font-weight: 500;
-  }
-  .tag-rust { background: var(--rust); color: white; }
-  .tag-cream { background: rgba(245,242,235,.12); color: var(--cream); }
-  .tag-ink { background: var(--ink); color: var(--paper); border: 1px solid var(--line); }
-
-  .featured-title {
-    font-family: var(--serif);
-    font-size: 1.4rem;
-    font-weight: 700;
-    color: var(--paper);
-    line-height: 1.3;
-    margin-bottom: 16px;
-  }
-
-  .featured-byline {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: var(--muted);
-    font-size: 0.78rem;
-    letter-spacing: 0.04em;
-  }
-  .byline-dot { width: 3px; height: 3px; background: var(--muted); border-radius: 50%; }
-
-  /* ─── DECORATIVE TICKER ─── */
-  .ticker-wrap {
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-    overflow: hidden;
-    padding: 12px 0;
-    background: var(--cream);
-  }
-
-  .ticker {
-    display: flex;
-    gap: 0;
-    white-space: nowrap;
-    animation: ticker 30s linear infinite;
-  }
-
-  .ticker-item {
-    font-family: var(--mono);
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--muted);
-    padding: 0 40px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-  }
-  .ticker-item::after {
-    content: '◆';
-    color: var(--rust);
-    font-size: 0.4rem;
-  }
-
-  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-  /* ─── SECTION WRAPPER ─── */
-  .section {
-    max-width: 1400px;
-    margin: 0 auto;
-    padding: 80px 5vw;
-  }
-
-  .section-header {
-    display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
-    margin-bottom: 48px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .section-label {
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--rust);
-    margin-bottom: 8px;
-  }
-
-  .section-title {
-    font-family: var(--serif);
-    font-size: clamp(1.8rem, 3vw, 2.6rem);
-    font-weight: 800;
-    letter-spacing: -0.025em;
-    line-height: 1.1;
-  }
-
-  .view-all {
-    font-size: 0.78rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--rust);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    transition: gap .2s;
-    white-space: nowrap;
-  }
-  .view-all:hover { gap: 14px; }
-  .view-all::after { content: '→'; }
-
-  /* ─── POST GRID ─── */
-  .posts-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 2px;
-  }
-
-  .post-card {
-    background: var(--white);
-    border: 1px solid var(--line);
-    overflow: hidden;
-    cursor: pointer;
-    transition: transform .25s, box-shadow .25s;
-    position: relative;
-  }
-  .post-card:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 40px rgba(14,13,11,.1);
-    z-index: 1;
-  }
-
-  .post-img-wrap {
-    overflow: hidden;
-    position: relative;
-  }
-
-  .post-img-ph {
-    width: 100%;
-    aspect-ratio: 16/9;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .post-img-ph span {
-    font-family: var(--serif);
-    font-size: 2rem;
-    font-weight: 900;
-    opacity: .18;
-    color: white;
-    user-select: none;
-  }
-
-  .post-card:hover .post-img-ph img,
-  .post-card:hover .post-img-ph { transform: scale(1.03); }
-
-  .post-img-ph { transition: transform .4s; }
-
-  .post-body { padding: 20px 22px 22px; }
-
-  .post-title {
-    font-family: var(--serif);
-    font-size: 1.05rem;
-    font-weight: 700;
-    line-height: 1.35;
-    color: var(--ink);
-    margin: 10px 0 8px;
-    transition: color .2s;
-  }
-  .post-card:hover .post-title { color: var(--rust); }
-
-  .post-excerpt {
-    font-size: 0.82rem;
-    color: var(--muted);
-    line-height: 1.65;
-    margin-bottom: 16px;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-  }
-
-  .post-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 0.72rem;
-    color: var(--muted);
-    font-family: var(--mono);
-    letter-spacing: 0.04em;
-    padding-top: 14px;
-    border-top: 1px solid var(--line);
-  }
-
-  .read-time { display: flex; align-items: center; gap: 5px; }
-  .read-time::before { content: '◷'; color: var(--rust); }
-
-  /* ─── FEATURED LONG READS ─── */
-  .long-reads { background: var(--ink); }
-  .long-reads .section { padding: 80px 5vw; }
-  .long-reads .section-title { color: var(--paper); }
-  .long-reads .section-label { color: var(--rust); }
-  .long-reads .section-header { border-bottom-color: rgba(255,255,255,.1); }
-
-  .long-reads-grid {
-    display: grid;
-    grid-template-columns: 1.6fr 1fr 1fr;
-    gap: 2px;
-  }
-
-  .lr-card {
-    background: rgba(255,255,255,.04);
-    border: 1px solid rgba(255,255,255,.08);
-    padding: 28px;
-    cursor: pointer;
-    transition: background .25s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .lr-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
-    background: var(--rust);
-    transform: scaleX(0);
-    transform-origin: left;
-    transition: transform .3s;
-  }
-  .lr-card:hover { background: rgba(255,255,255,.07); }
-  .lr-card:hover::before { transform: scaleX(1); }
-
-  .lr-card.big { grid-row: span 2; display: flex; flex-direction: column; justify-content: flex-end; }
-
-  .lr-number {
-    font-family: var(--serif);
-    font-size: 5rem;
-    font-weight: 900;
-    color: rgba(255,255,255,.06);
-    line-height: 1;
-    position: absolute;
-    top: 16px;
-    right: 20px;
-    letter-spacing: -0.04em;
-  }
-
-  .lr-title {
-    font-family: var(--serif);
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: var(--paper);
-    line-height: 1.3;
-    margin: 10px 0 10px;
-  }
-
-  .lr-card.big .lr-title {
-    font-size: 1.7rem;
-  }
-
-  .lr-excerpt {
-    font-size: 0.8rem;
-    color: rgba(245,242,235,.45);
-    line-height: 1.6;
-    margin-bottom: 14px;
-  }
-
-  .lr-meta {
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: rgba(245,242,235,.35);
-    display: flex;
-    gap: 12px;
-  }
-
-  /* ─── SIDEBAR LAYOUT ─── */
-  .main-sidebar {
-    display: grid;
-    grid-template-columns: 1fr 300px;
-    gap: 60px;
-    align-items: start;
-  }
-
-  /* ─── ARTICLE LIST ─── */
-  .article-list { display: flex; flex-direction: column; gap: 0; }
-
-  .article-item {
-    display: grid;
-    grid-template-columns: 100px 1fr;
-    gap: 20px;
-    padding: 24px 0;
-    border-bottom: 1px solid var(--line);
-    cursor: pointer;
-    transition: opacity .2s;
-  }
-  .article-item:hover { opacity: .75; }
-  .article-item:first-child { border-top: 1px solid var(--line); }
-
-  .article-thumb {
-    width: 100px;
-    aspect-ratio: 1;
-    border-radius: 2px;
-    overflow: hidden;
-    flex-shrink: 0;
-  }
-
-  .thumb-ph {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .thumb-ph span { font-family: var(--serif); font-size: 1.5rem; font-weight: 900; color: rgba(255,255,255,.25); }
-
-  .article-info { display: flex; flex-direction: column; justify-content: center; gap: 6px; }
-
-  .article-title {
-    font-family: var(--serif);
-    font-size: 1rem;
-    font-weight: 700;
-    line-height: 1.3;
-    color: var(--ink);
-    transition: color .2s;
-  }
-  .article-item:hover .article-title { color: var(--rust); }
-
-  .article-meta {
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--muted);
-    display: flex;
-    gap: 10px;
-  }
-
-  /* ─── SIDEBAR ─── */
-  .sidebar { position: sticky; top: 80px; }
-
-  .sidebar-widget {
-    margin-bottom: 40px;
-    padding-bottom: 40px;
-    border-bottom: 1px solid var(--line);
-  }
-  .sidebar-widget:last-child { border-bottom: none; }
-
-  .widget-title {
-    font-family: var(--mono);
-    font-size: 0.68rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--rust);
-    margin-bottom: 20px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-  .widget-title::after { content: ''; flex: 1; height: 1px; background: var(--line); }
-
-  .search-wrap {
-    position: relative;
-  }
-
-  .search-input {
-    width: 100%;
-    padding: 12px 40px 12px 16px;
-    background: var(--cream);
-    border: 1px solid var(--line);
-    border-radius: 2px;
-    font-family: var(--sans);
-    font-size: 0.85rem;
-    color: var(--ink);
-    outline: none;
-    transition: border-color .2s;
-  }
-  .search-input:focus { border-color: var(--rust); }
-  .search-input::placeholder { color: var(--muted); }
-
-  .search-btn {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: var(--muted);
-    font-size: 0.9rem;
-  }
-
-  .topics-list { display: flex; flex-wrap: wrap; gap: 8px; }
-
-  .topic-pill {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 6px 12px;
-    border: 1px solid var(--line);
-    border-radius: 2px;
-    background: var(--cream);
-    cursor: pointer;
-    transition: all .2s;
-    color: var(--muted);
-    font-weight: 500;
-  }
-  .topic-pill:hover, .topic-pill.active { background: var(--ink); color: var(--paper); border-color: var(--ink); }
-
-  .newsletter-form { display: flex; flex-direction: column; gap: 10px; }
-
-  .email-input {
-    padding: 11px 14px;
-    background: var(--cream);
-    border: 1px solid var(--line);
-    border-radius: 2px;
-    font-family: var(--sans);
-    font-size: 0.85rem;
-    color: var(--ink);
-    outline: none;
-    transition: border-color .2s;
-  }
-  .email-input:focus { border-color: var(--rust); }
-  .email-input::placeholder { color: var(--muted); }
-
-  .popular-list { display: flex; flex-direction: column; gap: 0; }
-
-  .popular-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-    padding: 14px 0;
-    border-bottom: 1px solid var(--line);
-    cursor: pointer;
-  }
-  .popular-item:last-child { border-bottom: none; }
-
-  .popular-num {
-    font-family: var(--serif);
-    font-size: 1.4rem;
-    font-weight: 900;
-    color: var(--line);
-    line-height: 1;
-    flex-shrink: 0;
-    width: 24px;
-    transition: color .2s;
-  }
-  .popular-item:hover .popular-num { color: var(--rust); }
-
-  .popular-title {
-    font-size: 0.85rem;
-    font-weight: 500;
-    line-height: 1.4;
-    color: var(--ink);
-    transition: color .2s;
-  }
-  .popular-item:hover .popular-title { color: var(--rust); }
-
-  /* ─── FOOTER ─── */
-  footer {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 60px 5vw 30px;
-  }
-
-  .footer-inner {
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
-  .footer-top {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
-    gap: 60px;
-    padding-bottom: 50px;
-    border-bottom: 1px solid rgba(255,255,255,.1);
-    margin-bottom: 30px;
-  }
-
-  .footer-brand .logo { color: var(--paper); margin-bottom: 14px; display: inline-flex; }
-  .footer-brand p { font-size: 0.83rem; color: rgba(245,242,235,.45); line-height: 1.7; max-width: 280px; }
-
-  .footer-col-title {
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--rust);
-    margin-bottom: 18px;
-  }
-
-  .footer-links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
-  .footer-links a {
-    font-size: 0.83rem;
-    color: rgba(245,242,235,.5);
-    text-decoration: none;
-    transition: color .2s;
-    cursor: pointer;
-  }
-  .footer-links a:hover { color: var(--paper); }
-
-  .footer-bottom {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-family: var(--mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: rgba(245,242,235,.3);
-  }
-
-  .social-links { display: flex; gap: 18px; }
-  .social-links a {
-    color: rgba(245,242,235,.3);
-    text-decoration: none;
-    font-size: 0.65rem;
-    letter-spacing: 0.1em;
-    transition: color .2s;
-  }
-  .social-links a:hover { color: var(--rust); }
-
-  /* ─── ANIMATIONS ─── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  .reveal {
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity .6s ease, transform .6s ease;
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  /* ─── MOBILE NAV ─── */
-  .mobile-nav {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: var(--ink);
-    z-index: 200;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 36px;
-  }
-  .mobile-nav.open { display: flex; }
-  .mobile-nav a {
-    font-family: var(--serif);
-    font-size: 2.2rem;
-    font-weight: 700;
-    color: var(--paper);
-    text-decoration: none;
-    letter-spacing: -0.02em;
-    cursor: pointer;
-    transition: color .2s;
-  }
-  .mobile-nav a:hover { color: var(--rust); }
-  .mobile-close {
-    position: absolute;
-    top: 20px; right: 24px;
-    background: none; border: none;
-    font-size: 1.8rem; color: var(--paper);
-    cursor: pointer;
-  }
-
-  /* ─── RESPONSIVE ─── */
-  @media (max-width: 1024px) {
-    .hero { grid-template-columns: 1fr; gap: 40px; min-height: auto; }
-    .posts-grid { grid-template-columns: 1fr 1fr; }
-    .long-reads-grid { grid-template-columns: 1fr 1fr; }
-    .lr-card.big { grid-row: span 1; }
-    .main-sidebar { grid-template-columns: 1fr; }
-    .sidebar { position: static; }
-    .footer-top { grid-template-columns: 1fr 1fr; gap: 40px; }
-  }
-
-  @media (max-width: 640px) {
-    nav { display: none; }
-    .hamburger { display: flex; }
-    .hero { padding-top: 40px; }
-    .hero h1 { font-size: 2.4rem; }
-    .posts-grid { grid-template-columns: 1fr; }
-    .long-reads-grid { grid-template-columns: 1fr; }
-    .hero-actions { flex-direction: column; align-items: flex-start; }
-    .footer-top { grid-template-columns: 1fr; }
-    .footer-bottom { flex-direction: column; gap: 14px; }
-  }
+:root {
+  --bg: #05080f;
+  --surface: #0b1120;
+  --surface2: #111827;
+  --border: #1e2d45;
+  --border2: #253550;
+  --gold: #f0a500;
+  --gold2: #ffc93c;
+  --blue: #2563eb;
+  --blue2: #3b82f6;
+  --teal: #0ea5e9;
+  --green: #10b981;
+  --red: #ef4444;
+  --text: #f0f4ff;
+  --text2: #94a3b8;
+  --text3: #64748b;
+  --sans: 'Outfit', sans-serif;
+  --sinhala: 'Noto Sans Sinhala', 'Outfit', sans-serif;
+  --tamil: 'Noto Sans Tamil', 'Outfit', sans-serif;
+  --display: 'Syne', 'Outfit', sans-serif;
+  --radius: 12px;
+  --glow: 0 0 40px rgba(240,165,0,.15);
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--sans);
+  line-height:1.6;
+  overflow-x:hidden;
+  min-height:100vh;
+}
+body.lang-si { font-family: var(--sinhala); }
+body.lang-ta { font-family: var(--tamil); }
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:4px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:var(--gold);border-radius:2px;}
+
+/* BG GRID */
+body::before{
+  content:'';position:fixed;inset:0;
+  background-image:
+    linear-gradient(rgba(37,99,235,.03) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(37,99,235,.03) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;z-index:0;
+}
+
+/* GLOW ORBS */
+.orb{position:fixed;border-radius:50%;filter:blur(80px);pointer-events:none;z-index:0;}
+.orb1{width:600px;height:600px;background:radial-gradient(circle,rgba(37,99,235,.12),transparent 70%);top:-200px;right:-100px;}
+.orb2{width:500px;height:500px;background:radial-gradient(circle,rgba(240,165,0,.08),transparent 70%);bottom:100px;left:-100px;}
+
+/* ─── NAV ─── */
+nav{
+  position:sticky;top:0;z-index:100;
+  background:rgba(5,8,15,.85);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 24px;
+}
+.nav-inner{
+  max-width:1200px;margin:0 auto;
+  display:flex;align-items:center;justify-content:space-between;
+  height:64px;
+}
+.logo{
+  font-family:var(--display);
+  font-size:1.4rem;font-weight:800;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  text-decoration:none;letter-spacing:-.02em;
+  display:flex;align-items:center;gap:8px;
+}
+.logo-icon{
+  width:32px;height:32px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.9rem;
+  -webkit-text-fill-color:initial;
+}
+
+.nav-links{display:flex;align-items:center;gap:8px;}
+.nav-links a{
+  font-size:.8rem;font-weight:500;
+  color:var(--text2);text-decoration:none;
+  padding:6px 14px;border-radius:8px;
+  transition:all .2s;cursor:pointer;
+}
+.nav-links a:hover{color:var(--text);background:var(--surface);}
+.nav-links a.active{color:var(--gold);background:rgba(240,165,0,.08);}
+
+/* LANGUAGE SWITCHER */
+.lang-switcher{
+  display:flex;align-items:center;gap:4px;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:8px;padding:3px;
+}
+.lang-btn{
+  font-size:.7rem;font-weight:600;
+  padding:5px 10px;border-radius:6px;
+  border:none;background:transparent;
+  color:var(--text3);cursor:pointer;
+  transition:all .2s;white-space:nowrap;
+}
+.lang-btn.active{background:var(--gold);color:#000;}
+
+.hamburger{
+  display:none;flex-direction:column;gap:5px;
+  background:none;border:none;cursor:pointer;padding:4px;
+}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);transition:.3s;}
+
+/* ─── HERO ─── */
+.hero{
+  position:relative;z-index:1;
+  max-width:1200px;margin:0 auto;
+  padding:80px 24px 60px;
+  text-align:center;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(240,165,0,.1);border:1px solid rgba(240,165,0,.25);
+  border-radius:100px;padding:6px 16px;
+  font-size:.72rem;font-weight:600;
+  color:var(--gold);letter-spacing:.08em;text-transform:uppercase;
+  margin-bottom:24px;
+  animation:fadeDown .6s ease both;
+}
+.pulse{width:6px;height:6px;background:var(--gold);border-radius:50%;animation:pulse 1.5s infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.5;transform:scale(1.5);}}
+
+.hero h1{
+  font-family:var(--display);
+  font-size:clamp(2.4rem,5vw,4.2rem);
+  font-weight:800;line-height:1.1;
+  letter-spacing:-.03em;
+  margin-bottom:20px;
+  animation:fadeUp .7s .1s ease both;
+}
+.hero h1 .grad{
+  background:linear-gradient(135deg,var(--gold),var(--gold2),var(--teal));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+}
+.hero-sub{
+  font-size:1.05rem;color:var(--text2);
+  max-width:600px;margin:0 auto 36px;
+  line-height:1.75;
+  animation:fadeUp .7s .2s ease both;
+}
+.hero-ctas{
+  display:flex;justify-content:center;gap:12px;flex-wrap:wrap;
+  animation:fadeUp .7s .3s ease both;
+  margin-bottom:60px;
+}
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 28px;border-radius:10px;
+  font-family:var(--sans);font-size:.88rem;font-weight:600;
+  cursor:pointer;border:none;transition:all .25s;text-decoration:none;
+}
+.btn-gold{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;
+}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(240,165,0,.35);}
+.btn-outline{
+  background:transparent;color:var(--text);
+  border:1px solid var(--border2);
+}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-2px);}
+
+/* STATS ROW */
+.stats-row{
+  display:flex;justify-content:center;gap:40px;flex-wrap:wrap;
+  padding:28px;background:var(--surface);border-radius:16px;border:1px solid var(--border);
+  animation:fadeUp .7s .4s ease both;
+}
+.stat{text-align:center;}
+.stat-num{
+  font-family:var(--display);font-size:1.8rem;font-weight:800;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  line-height:1;margin-bottom:4px;
+}
+.stat-label{font-size:.72rem;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;}
+
+/* ─── SAMPLE GALLERY ─── */
+.gallery-section{
+  max-width:1200px;margin:0 auto;padding:0 24px 80px;
+  position:relative;z-index:1;
+}
+.section-heading{
+  text-align:center;margin-bottom:48px;
+}
+.section-eyebrow{
+  font-size:.72rem;font-weight:600;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--gold);
+  margin-bottom:12px;
+}
+.section-title{
+  font-family:var(--display);font-size:clamp(1.6rem,3vw,2.4rem);
+  font-weight:800;letter-spacing:-.02em;
+}
+.section-sub{font-size:.9rem;color:var(--text2);margin-top:10px;}
+
+.gallery-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+}
+.gallery-card{
+  border-radius:var(--radius);overflow:hidden;position:relative;
+  background:var(--surface2);border:1px solid var(--border);
+  cursor:pointer;transition:transform .3s,box-shadow .3s;
+  aspect-ratio:3/4;
+  display:flex;align-items:center;justify-content:center;
+}
+.gallery-card:hover{transform:translateY(-4px);box-shadow:0 16px 40px rgba(0,0,0,.4);}
+.gallery-card.tall{grid-row:span 2;aspect-ratio:auto;}
+.gallery-ph{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;
+  background:var(--surface2);
+}
+.gallery-ph-icon{font-size:2rem;opacity:.3;}
+.gallery-label{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:12px;background:linear-gradient(transparent,rgba(0,0,0,.8));
+  font-size:.72rem;font-weight:600;color:var(--text2);
+  letter-spacing:.05em;text-transform:uppercase;
+}
+.gallery-badge{
+  position:absolute;top:10px;left:10px;
+  font-size:.62rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  padding:3px 8px;border-radius:6px;
+}
+.badge-gold{background:var(--gold);color:#000;}
+.badge-teal{background:var(--teal);color:#000;}
+.badge-blue{background:var(--blue2);color:#fff;}
+
+/* SVG face placeholder styles */
+.face-svg{width:60%;height:60%;opacity:.15;}
+
+/* ─── PROCESS STEPS ─── */
+.process-section{
+  background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:80px 24px;position:relative;z-index:1;
+}
+.process-inner{max-width:1200px;margin:0 auto;}
+.steps-grid{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:0;
+  margin-top:48px;
+}
+.step{
+  padding:28px 20px;text-align:center;position:relative;
+}
+.step:not(:last-child)::after{
+  content:'→';
+  position:absolute;right:-10px;top:50%;transform:translateY(-50%);
+  color:var(--border2);font-size:1.2rem;z-index:1;
+}
+.step-num{
+  width:48px;height:48px;
+  background:linear-gradient(135deg,rgba(240,165,0,.15),rgba(240,165,0,.05));
+  border:1px solid rgba(240,165,0,.3);
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--display);font-size:1rem;font-weight:800;color:var(--gold);
+  margin:0 auto 16px;
+}
+.step-title{font-size:.88rem;font-weight:700;margin-bottom:6px;}
+.step-desc{font-size:.75rem;color:var(--text3);line-height:1.6;}
+
+/* ─── ORDER FORM ─── */
+.form-section{
+  max-width:1200px;margin:0 auto;
+  padding:80px 24px;position:relative;z-index:1;
+}
+.form-container{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;overflow:hidden;
+}
+.form-header{
+  background:linear-gradient(135deg,rgba(240,165,0,.12),rgba(37,99,235,.08));
+  border-bottom:1px solid var(--border);
+  padding:32px 40px;
+  display:flex;align-items:center;gap:16px;
+}
+.form-header-icon{
+  width:52px;height:52px;
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.3rem;
+}
+.form-header h2{
+  font-family:var(--display);font-size:1.5rem;font-weight:800;
+  letter-spacing:-.02em;
+}
+.form-header p{font-size:.83rem;color:var(--text2);margin-top:4px;}
+
+.form-body{padding:40px;}
+
+/* FORM GRID */
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px;}
+.form-row.one{grid-template-columns:1fr;}
+.form-row.three{grid-template-columns:1fr 1fr 1fr;}
+
+.form-group{display:flex;flex-direction:column;gap:8px;}
+.form-label{
+  font-size:.78rem;font-weight:600;
+  color:var(--text2);letter-spacing:.05em;
+  display:flex;align-items:center;gap:6px;
+}
+.form-label .req{color:var(--gold);font-size:.9em;}
+.form-label .tip{
+  font-size:.65rem;font-weight:400;color:var(--text3);
+  background:var(--surface2);border:1px solid var(--border);
+  padding:1px 7px;border-radius:4px;
+}
+
+.form-input, .form-select, .form-textarea{
+  width:100%;padding:12px 16px;
+  background:var(--bg);border:1.5px solid var(--border);
+  border-radius:10px;color:var(--text);
+  font-family:var(--sans);font-size:.88rem;
+  outline:none;transition:border-color .2s,box-shadow .2s;
+  appearance:none;
+}
+.form-input:focus,.form-select:focus,.form-textarea:focus{
+  border-color:var(--gold);
+  box-shadow:0 0 0 3px rgba(240,165,0,.1);
+}
+.form-input::placeholder,.form-textarea::placeholder{color:var(--text3);}
+.form-textarea{resize:vertical;min-height:110px;}
+.form-select{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 14px center;
+  padding-right:36px;cursor:pointer;
+}
+.form-select option{background:var(--surface2);}
+
+/* CHECKBOX GROUP */
+.check-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+}
+.check-item{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg);border:1.5px solid var(--border);
+  border-radius:9px;padding:10px 12px;
+  cursor:pointer;transition:all .2s;user-select:none;
+}
+.check-item:hover{border-color:var(--border2);}
+.check-item.selected{border-color:var(--gold);background:rgba(240,165,0,.06);}
+.check-item input{display:none;}
+.check-box{
+  width:16px;height:16px;border-radius:4px;
+  border:1.5px solid var(--border2);flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;font-size:.7rem;
+}
+.check-item.selected .check-box{background:var(--gold);border-color:var(--gold);color:#000;}
+.check-text{font-size:.78rem;font-weight:500;line-height:1.3;}
+
+/* QUANTITY PICKER */
+.qty-picker{
+  display:flex;align-items:center;gap:0;
+  background:var(--bg);border:1.5px solid var(--border);
+  border-radius:10px;overflow:hidden;width:fit-content;
+}
+.qty-btn{
+  width:40px;height:44px;background:var(--surface2);border:none;
+  color:var(--text);font-size:1.1rem;cursor:pointer;
+  transition:background .2s;flex-shrink:0;
+}
+.qty-btn:hover{background:var(--border);}
+.qty-val{
+  width:56px;height:44px;text-align:center;
+  background:transparent;border:none;
+  font-family:var(--display);font-size:1rem;font-weight:700;
+  color:var(--text);outline:none;
+}
+
+/* UPLOAD ZONE */
+.upload-zone{
+  border:2px dashed var(--border2);border-radius:12px;
+  padding:32px;text-align:center;
+  background:var(--bg);cursor:pointer;
+  transition:all .3s;position:relative;
+}
+.upload-zone:hover,.upload-zone.drag{
+  border-color:var(--gold);
+  background:rgba(240,165,0,.04);
+}
+.upload-icon{font-size:2rem;margin-bottom:10px;opacity:.5;}
+.upload-title{font-size:.88rem;font-weight:600;margin-bottom:4px;}
+.upload-sub{font-size:.75rem;color:var(--text3);}
+.upload-limit{
+  display:inline-block;margin-top:8px;
+  font-size:.68rem;font-weight:600;letter-spacing:.08em;
+  padding:3px 10px;border-radius:6px;
+  background:rgba(240,165,0,.1);color:var(--gold);border:1px solid rgba(240,165,0,.2);
+}
+#fileInput{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.preview-row{
+  display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;
+  justify-content:center;
+}
+.preview-thumb{
+  width:70px;height:70px;border-radius:8px;
+  object-fit:cover;border:2px solid var(--border2);
+  position:relative;overflow:hidden;
+}
+.preview-wrap{position:relative;display:inline-block;}
+.remove-thumb{
+  position:absolute;top:-4px;right:-4px;
+  width:18px;height:18px;border-radius:50%;
+  background:var(--red);border:none;color:#fff;
+  font-size:.65rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+}
+
+/* CUSTOMIZATION PANEL */
+.custom-panel{
+  background:var(--bg);border:1.5px solid var(--border);
+  border-radius:12px;padding:24px;
+}
+.custom-tabs{
+  display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;
+}
+.custom-tab{
+  font-size:.75rem;font-weight:600;
+  padding:7px 14px;border-radius:8px;
+  border:1.5px solid var(--border);
+  background:transparent;color:var(--text2);cursor:pointer;
+  transition:all .2s;
+}
+.custom-tab.active{background:var(--gold);border-color:var(--gold);color:#000;}
+
+.custom-options{display:none;}
+.custom-options.active{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+
+.opt-item{
+  background:var(--surface2);border:1.5px solid var(--border);
+  border-radius:9px;padding:10px;text-align:center;
+  cursor:pointer;transition:all .2s;user-select:none;
+}
+.opt-item:hover{border-color:var(--border2);}
+.opt-item.selected{border-color:var(--gold);background:rgba(240,165,0,.06);}
+.opt-icon{font-size:1.3rem;margin-bottom:5px;}
+.opt-label{font-size:.7rem;font-weight:600;line-height:1.3;}
+.opt-sub{font-size:.62rem;color:var(--text3);margin-top:2px;}
+
+/* DIVIDER */
+.form-divider{
+  display:flex;align-items:center;gap:16px;
+  margin:28px 0;color:var(--text3);font-size:.75rem;font-weight:500;letter-spacing:.08em;text-transform:uppercase;
+}
+.form-divider::before,.form-divider::after{content:'';flex:1;height:1px;background:var(--border);}
+
+/* SUBMIT ROW */
+.submit-row{
+  display:flex;align-items:center;justify-content:space-between;
+  flex-wrap:wrap;gap:16px;
+  margin-top:32px;padding-top:28px;border-top:1px solid var(--border);
+}
+.price-estimate{
+  background:rgba(240,165,0,.08);border:1px solid rgba(240,165,0,.2);
+  border-radius:10px;padding:12px 20px;
+}
+.price-label{font-size:.68rem;font-weight:600;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;}
+.price-val{
+  font-family:var(--display);font-size:1.4rem;font-weight:800;color:var(--text);
+}
+.price-note{font-size:.68rem;color:var(--text3);}
+
+.btn-submit{
+  background:linear-gradient(135deg,var(--gold),var(--gold2));
+  color:#000;border:none;padding:15px 40px;
+  border-radius:12px;font-family:var(--sans);font-size:.95rem;font-weight:700;
+  cursor:pointer;transition:all .25s;
+  display:flex;align-items:center;gap:10px;
+}
+.btn-submit:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(240,165,0,.4);}
+.btn-submit:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+
+/* ─── TICKET MODAL ─── */
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);
+  backdrop-filter:blur(8px);
+  z-index:1000;display:none;
+  align-items:center;justify-content:center;padding:20px;
+}
+.modal-overlay.open{display:flex;}
+.modal{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:20px;padding:40px;
+  max-width:560px;width:100%;
+  animation:modalIn .3s ease;position:relative;
+}
+@keyframes modalIn{from{opacity:0;transform:scale(.95) translateY(20px);}to{opacity:1;transform:none;}}
+
+.modal-close{
+  position:absolute;top:16px;right:16px;
+  background:var(--surface2);border:1px solid var(--border);
+  color:var(--text2);width:32px;height:32px;border-radius:8px;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;font-size:1rem;transition:all .2s;
+}
+.modal-close:hover{background:var(--red);border-color:var(--red);color:#fff;}
+
+.ticket-success{
+  width:64px;height:64px;
+  background:linear-gradient(135deg,var(--green),#059669);
+  border-radius:16px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;margin:0 auto 20px;
+}
+.ticket-modal-title{
+  font-family:var(--display);font-size:1.6rem;font-weight:800;
+  text-align:center;margin-bottom:6px;
+}
+.ticket-modal-sub{text-align:center;color:var(--text2);font-size:.85rem;margin-bottom:28px;}
+
+.ticket-card{
+  background:var(--bg);border:2px dashed var(--border2);
+  border-radius:14px;padding:24px;
+  margin-bottom:20px;
+}
+.ticket-row{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:8px 0;border-bottom:1px solid var(--border);
+}
+.ticket-row:last-child{border-bottom:none;}
+.ticket-key{font-size:.75rem;font-weight:600;color:var(--text3);letter-spacing:.06em;text-transform:uppercase;}
+.ticket-val{font-size:.88rem;font-weight:600;color:var(--text);}
+.ticket-num{
+  font-family:var(--display);font-size:1.3rem;font-weight:800;
+  color:var(--gold);letter-spacing:.05em;
+}
+
+.eta-bar{
+  background:rgba(240,165,0,.08);border:1px solid rgba(240,165,0,.2);
+  border-radius:12px;padding:16px 20px;
+  display:flex;align-items:center;gap:14px;
+  margin-bottom:20px;
+}
+.eta-icon{font-size:1.6rem;}
+.eta-text .eta-label{font-size:.7rem;font-weight:600;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;}
+.eta-text .eta-time{font-size:1.05rem;font-weight:700;}
+.eta-text .eta-note{font-size:.72rem;color:var(--text3);margin-top:2px;}
+
+.ticket-actions{display:flex;gap:10px;}
+.ticket-actions .btn{flex:1;justify-content:center;font-size:.82rem;padding:11px 16px;}
+
+/* ─── TICKET TRACKER ─── */
+.tracker-section{
+  background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  padding:80px 24px;position:relative;z-index:1;
+}
+.tracker-inner{max-width:700px;margin:0 auto;}
+.tracker-form{
+  display:flex;gap:10px;margin-top:32px;
+}
+.tracker-form .form-input{flex:1;}
+.tracker-result{
+  margin-top:20px;background:var(--bg);border:1px solid var(--border);
+  border-radius:12px;padding:24px;display:none;
+}
+.tracker-result.show{display:block;}
+
+.status-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 14px;border-radius:100px;
+  font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+}
+.status-pending{background:rgba(240,165,0,.15);color:var(--gold);border:1px solid rgba(240,165,0,.3);}
+.status-progress{background:rgba(14,165,233,.15);color:var(--teal);border:1px solid rgba(14,165,233,.3);}
+.status-done{background:rgba(16,185,129,.15);color:var(--green);border:1px solid rgba(16,185,129,.3);}
+
+.tracker-steps{
+  display:flex;align-items:center;margin:20px 0;gap:0;
+}
+.t-step{flex:1;text-align:center;position:relative;}
+.t-step-dot{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.75rem;font-weight:700;margin:0 auto 6px;
+  border:2px solid var(--border2);color:var(--text3);background:var(--bg);
+  position:relative;z-index:1;transition:all .3s;
+}
+.t-step.done .t-step-dot{background:var(--green);border-color:var(--green);color:#fff;}
+.t-step.active .t-step-dot{background:var(--gold);border-color:var(--gold);color:#000;animation:pulse 1.5s infinite;}
+.t-step-label{font-size:.65rem;color:var(--text3);font-weight:500;line-height:1.3;}
+.t-step.done .t-step-label,.t-step.active .t-step-label{color:var(--text2);}
+.t-connector{flex:1;height:2px;background:var(--border);margin-top:14px;position:relative;}
+.t-connector.done{background:var(--green);}
+
+/* ─── SUPPORT SECTION ─── */
+.support-section{
+  max-width:1200px;margin:0 auto;
+  padding:80px 24px;position:relative;z-index:1;
+}
+.support-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:48px;}
+.support-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:16px;padding:32px;
+  transition:all .25s;cursor:pointer;
+}
+.support-card:hover{border-color:var(--gold);transform:translateY(-3px);box-shadow:var(--glow);}
+.support-icon{
+  width:52px;height:52px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;margin-bottom:16px;
+}
+.icon-gold{background:rgba(240,165,0,.15);}
+.icon-blue{background:rgba(37,99,235,.15);}
+.icon-teal{background:rgba(14,165,233,.15);}
+.icon-green{background:rgba(16,185,129,.15);}
+.support-title{font-size:1rem;font-weight:700;margin-bottom:6px;}
+.support-desc{font-size:.82rem;color:var(--text2);line-height:1.65;}
+.support-link{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.78rem;font-weight:600;color:var(--gold);
+  margin-top:14px;text-decoration:none;cursor:pointer;
+  transition:gap .2s;
+}
+.support-link:hover{gap:10px;}
+.support-link::after{content:'→';}
+
+/* ─── FAQ ─── */
+.faq-section{
+  background:var(--surface);border-top:1px solid var(--border);
+  padding:80px 24px;position:relative;z-index:1;
+}
+.faq-inner{max-width:800px;margin:0 auto;}
+.faq-list{margin-top:40px;}
+.faq-item{
+  border-bottom:1px solid var(--border);
+  overflow:hidden;
+}
+.faq-q{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:20px 0;cursor:pointer;gap:16px;
+  font-size:.92rem;font-weight:600;line-height:1.4;
+}
+.faq-icon{
+  width:28px;height:28px;border-radius:8px;
+  background:var(--surface2);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:.8rem;color:var(--text3);transition:all .3s;
+}
+.faq-item.open .faq-icon{background:var(--gold);border-color:var(--gold);color:#000;transform:rotate(45deg);}
+.faq-a{
+  font-size:.83rem;color:var(--text2);line-height:1.75;
+  max-height:0;overflow:hidden;transition:max-height .4s ease,padding .3s;
+}
+.faq-item.open .faq-a{max-height:200px;padding-bottom:20px;}
+
+/* ─── FOOTER ─── */
+footer{
+  background:var(--bg);border-top:1px solid var(--border);
+  padding:60px 24px 30px;position:relative;z-index:1;
+}
+.footer-inner{max-width:1200px;margin:0 auto;}
+.footer-top{
+  display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px;
+  padding-bottom:40px;border-bottom:1px solid var(--border);margin-bottom:28px;
+}
+.footer-brand .logo{display:inline-flex;font-size:1.2rem;-webkit-text-fill-color:transparent;}
+.footer-brand p{font-size:.8rem;color:var(--text3);line-height:1.7;margin-top:12px;max-width:260px;}
+.footer-col-title{font-size:.65rem;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:14px;}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:10px;}
+.footer-links a{font-size:.8rem;color:var(--text3);text-decoration:none;cursor:pointer;transition:color .2s;}
+.footer-links a:hover{color:var(--gold);}
+.footer-bottom{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;}
+.footer-copy{font-size:.72rem;color:var(--text3);}
+.footer-langs{display:flex;gap:10px;}
+.footer-langs span{font-size:.68rem;color:var(--text3);cursor:pointer;transition:color .2s;}
+.footer-langs span:hover{color:var(--gold);}
+
+/* ─── MOBILE NAV ─── */
+.mobile-menu{
+  display:none;position:fixed;inset:0;
+  background:var(--bg);z-index:200;
+  flex-direction:column;align-items:center;justify-content:center;gap:24px;
+}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{
+  font-family:var(--display);font-size:1.8rem;font-weight:800;
+  color:var(--text);text-decoration:none;cursor:pointer;transition:color .2s;
+}
+.mobile-menu a:hover{color:var(--gold);}
+.mobile-close{position:absolute;top:20px;right:20px;background:none;border:none;color:var(--text);font-size:1.5rem;cursor:pointer;}
+
+/* ─── ANIMATIONS ─── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:none;}}
+@keyframes fadeDown{from{opacity:0;transform:translateY(-10px);}to{opacity:1;transform:none;}}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.reveal.visible{opacity:1;transform:none;}
+
+/* ─── ALERT ─── */
+.alert{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:12px 16px;border-radius:10px;
+  font-size:.8rem;line-height:1.55;
+  margin-bottom:16px;
+}
+.alert-gold{background:rgba(240,165,0,.08);border:1px solid rgba(240,165,0,.2);color:var(--text2);}
+.alert-icon{font-size:1rem;flex-shrink:0;margin-top:1px;}
+
+/* ─── RESPONSIVE ─── */
+@media(max-width:1024px){
+  .gallery-grid{grid-template-columns:repeat(3,1fr);}
+  .steps-grid{grid-template-columns:repeat(3,1fr);gap:1px;}
+  .step:nth-child(3)::after,.step:nth-child(4)::after{display:none;}
+  .footer-top{grid-template-columns:1fr 1fr;gap:40px;}
+  .support-grid{grid-template-columns:1fr;}
+}
+@media(max-width:768px){
+  .nav-links{display:none;}
+  .hamburger{display:flex;}
+  .hero{padding:50px 20px 40px;}
+  .gallery-grid{grid-template-columns:1fr 1fr;}
+  .form-row,.form-row.three{grid-template-columns:1fr;}
+  .check-grid{grid-template-columns:1fr 1fr;}
+  .custom-options.active{grid-template-columns:1fr 1fr;}
+  .steps-grid{grid-template-columns:1fr;}
+  .step::after{display:none;}
+  .submit-row{flex-direction:column;}
+  .tracker-form{flex-direction:column;}
+  .footer-top{grid-template-columns:1fr;}
+  .footer-bottom{flex-direction:column;text-align:center;}
+}
+@media(max-width:480px){
+  .gallery-grid{grid-template-columns:1fr;}
+  .check-grid{grid-template-columns:1fr;}
+  .hero h1{font-size:2rem;}
+}
+
+/* ─── TRANSLATIONS ─── */
+[data-lang]{display:none;}
+.lang-si [data-lang="si"]{display:initial;}
+.lang-en [data-lang="en"]{display:initial;}
+.lang-ta [data-lang="ta"]{display:initial;}
+[data-lang-block]{display:none;}
+.lang-si [data-lang-block="si"]{display:block;}
+.lang-en [data-lang-block="en"]{display:block;}
+.lang-ta [data-lang-block="ta"]{display:block;}
+/* default show english if nothing set */
+body:not(.lang-si):not(.lang-ta) [data-lang="en"]{display:initial;}
+body:not(.lang-si):not(.lang-ta) [data-lang-block="en"]{display:block;}
 </style>
 </head>
-<body>
+<body class="lang-si">
 
-<!-- MOBILE NAV -->
-<div class="mobile-nav" id="mobileNav">
-  <button class="mobile-close" onclick="closeMobileNav()">✕</button>
-  <a onclick="closeMobileNav()">Stories</a>
-  <a onclick="closeMobileNav()">Topics</a>
-  <a onclick="closeMobileNav()">Writers</a>
-  <a onclick="closeMobileNav()">About</a>
+<div class="orb orb1"></div>
+<div class="orb orb2"></div>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-close" onclick="closeMobile()">✕</button>
+  <a onclick="scrollTo('form');closeMobile()">
+    <span data-lang="si">ඇණවුම</span>
+    <span data-lang="en">Order</span>
+    <span data-lang="ta">ஆர்டர்</span>
+  </a>
+  <a onclick="scrollTo('tracker');closeMobile()">
+    <span data-lang="si">ටිකට් ට්‍රැකර්</span>
+    <span data-lang="en">Ticket Tracker</span>
+    <span data-lang="ta">டிக்கெட் ட்ராக்கர்</span>
+  </a>
+  <a onclick="scrollTo('support');closeMobile()">
+    <span data-lang="si">සහාය</span>
+    <span data-lang="en">Support</span>
+    <span data-lang="ta">ஆதரவு</span>
+  </a>
+  <a onclick="scrollTo('faq');closeMobile()">
+    <span data-lang="si">FAQ</span>
+    <span data-lang="en">FAQ</span>
+    <span data-lang="ta">FAQ</span>
+  </a>
 </div>
 
-<!-- HEADER -->
-<header>
-  <div class="header-inner">
-    <a class="logo" href="#"><span></span>INKWELL</a>
-    <nav>
-      <a class="active" onclick="">Stories</a>
-      <a onclick="">Topics</a>
-      <a onclick="">Writers</a>
-      <a onclick="">About</a>
-      <a class="header-cta" onclick="">Subscribe</a>
-    </nav>
-    <button class="hamburger" onclick="openMobileNav()">
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="logo" href="#"><div class="logo-icon">✦</div>PixCraft AI</a>
+    <div class="nav-links">
+      <a class="active" onclick="scrollTo('gallery')">
+        <span data-lang="si">නිදර්ශන</span><span data-lang="en">Gallery</span><span data-lang="ta">கேலரி</span>
+      </a>
+      <a onclick="scrollTo('form')">
+        <span data-lang="si">ඇණවුම</span><span data-lang="en">Order Now</span><span data-lang="ta">ஆர்டர்</span>
+      </a>
+      <a onclick="scrollTo('tracker')">
+        <span data-lang="si">ටිකට්</span><span data-lang="en">Track Order</span><span data-lang="ta">ட்ராக்</span>
+      </a>
+      <a onclick="scrollTo('support')">
+        <span data-lang="si">සහාය</span><span data-lang="en">Support</span><span data-lang="ta">ஆதரவு</span>
+      </a>
+      <div class="lang-switcher">
+        <button class="lang-btn active" onclick="setLang('si')">සිංහල</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('ta')">தமிழ்</button>
+      </div>
+    </div>
+    <button class="hamburger" onclick="document.getElementById('mobileMenu').classList.add('open')">
       <span></span><span></span><span></span>
     </button>
   </div>
-</header>
+</nav>
 
 <!-- HERO -->
-<section>
-  <div class="hero">
-    <div class="hero-text">
-      <div class="hero-eyebrow">Featured this week</div>
-      <h1>Ideas worth <em>reading,</em> writing worth <em>sharing.</em></h1>
-      <p class="hero-desc">Discover thoughtful essays, sharp opinions, and stories that change how you see the world. Curated daily by writers who care.</p>
-      <div class="hero-actions">
-        <button class="btn-primary">Start Reading</button>
-        <button class="btn-ghost">Browse Topics</button>
+<section class="hero">
+  <div class="hero-badge">
+    <span class="pulse"></span>
+    <span data-lang="si">ශ්‍රී ලංකාවේ අංක 1 AI ඡායාරූප සේවාව</span>
+    <span data-lang="en">Sri Lanka's #1 AI Photo Service</span>
+    <span data-lang="ta">இலங்கையின் #1 AI புகைப்பட சேவை</span>
+  </div>
+  <h1>
+    <span data-lang="si">ඔබේ <span class="grad">AI ඡායාරූප</span><br>අපගෙන් ලබාගන්න</span>
+    <span data-lang="en">Get Your <span class="grad">AI Photos</span><br>Crafted By Experts</span>
+    <span data-lang="ta">உங்கள் <span class="grad">AI புகைப்படங்கள்</span><br>நிபுணர்களிடம் இருந்து</span>
+  </h1>
+  <p class="hero-sub">
+    <span data-lang="si">විසා ඡායාරූප, ගමන් බලපත්‍ර ඡායාරූප, ව්‍යාපාරික ඡායාරූප සහ ඕනෑම වර්ගයක් — ඔබේ ඡායාරූප යොමු කරන්න, අපි ඔබේ ඉල්ලීමට අනුව AI ඡායාරූප නිර්මාණය කරන්නෙමු.</span>
+    <span data-lang="en">Visa photos, passport photos, business portraits & more — share your reference images, and we'll craft stunning AI-enhanced photos exactly as you request.</span>
+    <span data-lang="ta">விசா புகைப்படங்கள், கடவுச்சீட்டு புகைப்படங்கள், வணிக புகைப்படங்கள் — உங்கள் படங்களை அனுப்புங்கள், நாங்கள் AI மூலம் உருவாக்குவோம்.</span>
+  </p>
+  <div class="hero-ctas">
+    <button class="btn btn-gold" onclick="scrollTo('form')">
+      ✦ 
+      <span data-lang="si">දැන් ඇණවුම් කරන්න</span>
+      <span data-lang="en">Order Now</span>
+      <span data-lang="ta">இப்போது ஆர்டர் செய்யுங்கள்</span>
+    </button>
+    <button class="btn btn-outline" onclick="scrollTo('gallery')">
+      <span data-lang="si">නිදර්ශන බලන්න</span>
+      <span data-lang="en">View Samples</span>
+      <span data-lang="ta">மாதிரிகளை காண்க</span>
+    </button>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><div class="stat-num">12,000+</div><div class="stat-label"><span data-lang="si">සම්පූර්ණ ඇණවුම්</span><span data-lang="en">Orders Done</span><span data-lang="ta">ஆர்டர்கள்</span></div></div>
+    <div class="stat"><div class="stat-num">4.9★</div><div class="stat-label"><span data-lang="si">පාරිභෝගික ශ්‍රේණිගත කිරීම</span><span data-lang="en">Customer Rating</span><span data-lang="ta">மதிப்பீடு</span></div></div>
+    <div class="stat"><div class="stat-num">24h</div><div class="stat-label"><span data-lang="si">සාමාන්‍ය deliverytime</span><span data-lang="en">Avg Delivery Time</span><span data-lang="ta">சேர்விப்பு நேரம்</span></div></div>
+    <div class="stat"><div class="stat-num">50+</div><div class="stat-label"><span data-lang="si">ඡායාරූප වර්ග</span><span data-lang="en">Photo Types</span><span data-lang="ta">புகைப்பட வகைகள்</span></div></div>
+    <div class="stat"><div class="stat-num">100%</div><div class="stat-label"><span data-lang="si">නිශ්චිත ව්‍යාජ රහිත</span><span data-lang="en">Real-Face Accurate</span><span data-lang="ta">உண்மையான முகம்</span></div></div>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<section id="gallery" class="gallery-section reveal">
+  <div class="section-heading">
+    <div class="section-eyebrow">
+      <span data-lang="si">නිදර්ශන</span><span data-lang="en">Sample Work</span><span data-lang="ta">மாதிரி வேலை</span>
+    </div>
+    <h2 class="section-title">
+      <span data-lang="si">අපගේ AI ඡායාරූප නිදර්ශන</span>
+      <span data-lang="en">Our AI Photo Samples</span>
+      <span data-lang="ta">எங்கள் AI புகைப்பட மாதிரிகள்</span>
+    </h2>
+    <p class="section-sub">
+      <span data-lang="si">සෑම ඡායාරූපයක්ම ඔබේ සැබෑ මුහුණ ආශ්‍රය කරගෙන නිර්මාණය කෙරේ.</span>
+      <span data-lang="en">Every photo is crafted using your real face as reference.</span>
+      <span data-lang="ta">ஒவ்வொரு புகைப்படமும் உங்கள் உண்மையான முகத்தை அடிப்படையாக கொண்டது.</span>
+    </p>
+  </div>
+  <div class="gallery-grid">
+    <div class="gallery-card tall">
+      <div class="gallery-ph" style="background:linear-gradient(160deg,#1a2340,#0d1a35)">
+        <svg class="face-svg" viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="50" cy="48" rx="28" ry="34" stroke="white" stroke-width="2"/>
+          <path d="M25 95 Q50 80 75 95 L80 120 H20 Z" stroke="white" stroke-width="2" fill="none"/>
+          <circle cx="40" cy="44" r="4" stroke="white" stroke-width="1.5"/>
+          <circle cx="60" cy="44" r="4" stroke="white" stroke-width="1.5"/>
+          <path d="M40 62 Q50 70 60 62" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="gallery-badge badge-gold">
+        <span data-lang="si">විසා</span><span data-lang="en">VISA</span><span data-lang="ta">விசா</span>
+      </div>
+      <div class="gallery-label">
+        <span data-lang="si">විසා ඡායාරූප</span><span data-lang="en">Visa Photo</span><span data-lang="ta">விசா படம்</span>
       </div>
     </div>
-    <div class="hero-featured">
-      <div class="featured-card">
-        <div class="img-placeholder">
-          <div class="placeholder-text">ESSAY</div>
-        </div>
-        <div class="featured-meta">
-          <div><span class="tag tag-rust">Essay</span></div>
-          <div class="featured-title">The Attention Economy Has Already Won — Here's How to Fight Back</div>
-          <div class="featured-byline">
-            <span>Mara Osei</span>
-            <span class="byline-dot"></span>
-            <span>Mar 16</span>
-            <span class="byline-dot"></span>
-            <span>8 min read</span>
-          </div>
-        </div>
+    <div class="gallery-card">
+      <div class="gallery-ph" style="background:linear-gradient(160deg,#1a2d1a,#0d280d)">
+        <svg class="face-svg" viewBox="0 0 100 130" fill="none"><ellipse cx="50" cy="48" rx="28" ry="34" stroke="white" stroke-width="2"/><path d="M22 95 Q50 78 78 95 L84 120 H16 Z" stroke="white" stroke-width="2" fill="none"/></svg>
+      </div>
+      <div class="gallery-badge badge-teal">
+        <span data-lang="si">ගමන් බලපත්‍ර</span><span data-lang="en">PASSPORT</span><span data-lang="ta">பாஸ்போர்ட்</span>
+      </div>
+      <div class="gallery-label">
+        <span data-lang="si">ගමන් බලපත්‍ර</span><span data-lang="en">Passport</span><span data-lang="ta">பாஸ்போர்ட்</span>
+      </div>
+    </div>
+    <div class="gallery-card">
+      <div class="gallery-ph" style="background:linear-gradient(160deg,#2a1a1a,#3d1515)">
+        <svg class="face-svg" viewBox="0 0 100 130" fill="none"><ellipse cx="50" cy="48" rx="28" ry="34" stroke="white" stroke-width="2"/><path d="M22 95 Q50 78 78 95 L84 120 H16 Z" stroke="white" stroke-width="2" fill="none"/></svg>
+      </div>
+      <div class="gallery-badge badge-blue">
+        <span data-lang="si">ව්‍යාපාරික</span><span data-lang="en">BUSINESS</span><span data-lang="ta">வணிகம்</span>
+      </div>
+      <div class="gallery-label">
+        <span data-lang="si">ව්‍යාපාරික ඡායාරූප</span><span data-lang="en">Business Portrait</span><span data-lang="ta">வணிக படம்</span>
+      </div>
+    </div>
+    <div class="gallery-card">
+      <div class="gallery-ph" style="background:linear-gradient(160deg,#1a1a2d,#0d0d28)">
+        <svg class="face-svg" viewBox="0 0 100 130" fill="none"><ellipse cx="50" cy="48" rx="28" ry="34" stroke="white" stroke-width="2"/><path d="M22 95 Q50 78 78 95 L84 120 H16 Z" stroke="white" stroke-width="2" fill="none"/></svg>
+      </div>
+      <div class="gallery-badge badge-gold">
+        <span data-lang="si">ජාතික හැඳුනුම්පත</span><span data-lang="en">NIC</span><span data-lang="ta">தேசிய அடையாளம்</span>
+      </div>
+      <div class="gallery-label">
+        <span data-lang="si">ජා.හැ.පත</span><span data="en">NIC Photo</span><span data-lang="ta">NIC படம்</span>
+      </div>
+    </div>
+    <div class="gallery-card">
+      <div class="gallery-ph" style="background:linear-gradient(160deg,#2a2010,#3d3015)">
+        <svg class="face-svg" viewBox="0 0 100 130" fill="none"><ellipse cx="50" cy="48" rx="28" ry="34" stroke="white" stroke-width="2"/><path d="M22 95 Q50 78 78 95 L84 120 H16 Z" stroke="white" stroke-width="2" fill="none"/></svg>
+      </div>
+      <div class="gallery-badge badge-teal">
+        <span data-lang="si">LinkedIn</span><span data-lang="en">LINKEDIN</span><span data-lang="ta">LINKEDIN</span>
+      </div>
+      <div class="gallery-label">
+        <span data-lang="si">සමාජ මාධ්‍ය</span><span data-lang="en">Social Media</span><span data-lang="ta">சமூக ஊடகம்</span>
       </div>
     </div>
   </div>
 </section>
 
-<!-- TICKER -->
-<div class="ticker-wrap">
-  <div class="ticker">
-    <span class="ticker-item">Design & Culture</span>
-    <span class="ticker-item">Tech & Society</span>
-    <span class="ticker-item">Philosophy</span>
-    <span class="ticker-item">Science & Nature</span>
-    <span class="ticker-item">Creative Writing</span>
-    <span class="ticker-item">Politics</span>
-    <span class="ticker-item">Environment</span>
-    <span class="ticker-item">Mental Health</span>
-    <span class="ticker-item">Design & Culture</span>
-    <span class="ticker-item">Tech & Society</span>
-    <span class="ticker-item">Philosophy</span>
-    <span class="ticker-item">Science & Nature</span>
-    <span class="ticker-item">Creative Writing</span>
-    <span class="ticker-item">Politics</span>
-    <span class="ticker-item">Environment</span>
-    <span class="ticker-item">Mental Health</span>
-  </div>
-</div>
-
-<!-- LATEST POSTS -->
-<section class="section reveal">
-  <div class="section-header">
-    <div>
-      <div class="section-label">Latest</div>
-      <h2 class="section-title">Fresh from the press</h2>
-    </div>
-    <a class="view-all">All stories</a>
-  </div>
-  <div class="posts-grid">
-
-    <div class="post-card">
-      <div class="post-img-wrap">
-        <div class="post-img-ph" style="background: linear-gradient(135deg,#1a2a3a,#2d4a6a);">
-          <span>TECH</span>
-        </div>
+<!-- HOW IT WORKS -->
+<section class="process-section reveal">
+  <div class="process-inner">
+    <div class="section-heading">
+      <div class="section-eyebrow">
+        <span data-lang="si">ක්‍රියාවලිය</span><span data-lang="en">How It Works</span><span data-lang="ta">எப்படி செயல்படுகிறது</span>
       </div>
-      <div class="post-body">
-        <span class="tag tag-ink">Technology</span>
-        <div class="post-title">Why Every Developer Should Learn to Draw</div>
-        <p class="post-excerpt">Visual thinking is the hidden superpower that separates good engineers from truly great ones.</p>
-        <div class="post-footer">
-          <span>James Liu</span>
-          <span class="read-time">5 min read</span>
-        </div>
+      <h2 class="section-title">
+        <span data-lang="si">ඇණවුමෙන් බෙදාහැරීම දක්වා</span>
+        <span data-lang="en">From Order to Delivery</span>
+        <span data-lang="ta">ஆர்டரிலிருந்து டெலிவரி வரை</span>
+      </h2>
+    </div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title"><span data-lang="si">ෆෝෆෝ ඉදිරිපත් කරන්න</span><span data-lang="en">Submit Photos</span><span data-lang="ta">படங்கள் சமர்ப்பிக்க</span></div>
+        <div class="step-desc"><span data-lang="si">ඔබේ 1-5 ඡායාරූප සහ ඔබේ ඉල්ලීම ඉදිරිපත් කරන්න</span><span data-lang="en">Upload 1–5 reference photos with your request details</span><span data-lang="ta">1-5 குறிப்பு படங்களை பதிவேற்றவும்</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title"><span data-lang="si">ටිකට් ලැබෙයි</span><span data-lang="en">Get Ticket</span><span data-lang="ta">டிக்கெட் பெறுக</span></div>
+        <div class="step-desc"><span data-lang="si">ඔබේ ඇනවුම් ටිකට් අංකය සහ නිමා කිරීමේ ගණිත කාලය ලැබේ</span><span data-lang="en">Instantly receive your ticket number and estimated completion time</span><span data-lang="ta">உடனே உங்கள் டிக்கெட் எண் மற்றும் மதிப்பீட்டு நேரம் கிடைக்கும்</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title"><span data-lang="si">AI නිර්මාණය</span><span data-lang="en">AI Creation</span><span data-lang="ta">AI உருவாக்கம்</span></div>
+        <div class="step-desc"><span data-lang="si">අපගේ AI විශේෂඥ කණ්ඩායම ඔබේ ඡායාරූප නිර්මාණය කරයි</span><span data-lang="en">Our expert AI team crafts your photos with precision</span><span data-lang="ta">எங்கள் AI வல்லுனர் குழு உங்கள் படங்களை உருவாக்குகிறது</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-title"><span data-lang="si">ගුණාත්මක පරීක්ෂාව</span><span data-lang="en">Quality Check</span><span data-lang="ta">தரம் சரிபார்க்கவும்</span></div>
+        <div class="step-desc"><span data-lang="si">සෑම ඡායාරූපයක්ම කිසිදු දෝෂයක් නොමැතිව ශ්‍රේෂ්ඨ ගුණාත්මක බවෙන් සිදු කෙරේ</span><span data-lang="en">Every photo is reviewed for quality and accuracy</span><span data-lang="ta">ஒவ்வொரு படமும் தரம் மற்றும் துல்லியத்திற்காக சரிபார்க்கப்படுகிறது</span></div>
+      </div>
+      <div class="step">
+        <div class="step-num">05</div>
+        <div class="step-title"><span data-lang="si">ඊමේල් ලැබේ</span><span data-lang="en">Delivered!</span><span data-lang="ta">டெலிவரி!</span></div>
+        <div class="step-desc"><span data-lang="si">ඔබේ ඡායාරූප ඊමේල් ඔස්සේ ඔබට ලැබේ</span><span data-lang="en">Your photos are delivered to your email before the estimate</span><span data-lang="ta">உங்கள் படங்கள் மதிப்பீட்டிற்கு முன்பே உங்கள் மின்னஞ்சலுக்கு வரும்</span></div>
       </div>
     </div>
-
-    <div class="post-card">
-      <div class="post-img-wrap">
-        <div class="post-img-ph" style="background: linear-gradient(135deg,#2a1a1a,#5a2e2e);">
-          <span>MIND</span>
-        </div>
-      </div>
-      <div class="post-body">
-        <span class="tag tag-rust">Psychology</span>
-        <div class="post-title">The Paradox of Choice Is Making Us Miserable</div>
-        <p class="post-excerpt">More options, more suffering. How infinite menus became our greatest modern torment.</p>
-        <div class="post-footer">
-          <span>Dr. Aisha Nkomo</span>
-          <span class="read-time">7 min read</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="post-card">
-      <div class="post-img-wrap">
-        <div class="post-img-ph" style="background: linear-gradient(135deg,#1a2a1a,#2d5a2e);">
-          <span>EARTH</span>
-        </div>
-      </div>
-      <div class="post-body">
-        <span class="tag tag-ink">Environment</span>
-        <div class="post-title">The Last Glacier Photographers</div>
-        <p class="post-excerpt">A group of artists racing against time to document what climate change is erasing forever.</p>
-        <div class="post-footer">
-          <span>Elina Kovac</span>
-          <span class="read-time">6 min read</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="post-card">
-      <div class="post-img-wrap">
-        <div class="post-img-ph" style="background: linear-gradient(135deg,#28201a,#5a4a30);">
-          <span>LIFE</span>
-        </div>
-      </div>
-      <div class="post-body">
-        <span class="tag tag-ink">Culture</span>
-        <div class="post-title">What Coffee Shop Culture Says About Modern Loneliness</div>
-        <p class="post-excerpt">We crowd into public spaces to be alone together — and that might be okay.</p>
-        <div class="post-footer">
-          <span>Tom Andreou</span>
-          <span class="read-time">4 min read</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="post-card">
-      <div class="post-img-wrap">
-        <div class="post-img-ph" style="background: linear-gradient(135deg,#1e1a2a,#3d306a);">
-          <span>SPACE</span>
-        </div>
-      </div>
-      <div class="post-body">
-        <span class="tag tag-rust">Science</span>
-        <div class="post-title">Are We Alone? The Evidence Is More Surprising Than You Think</div>
-        <p class="post-excerpt">Recent discoveries have fundamentally shifted what we thought we knew about life in the universe.</p>
-        <div class="post-footer">
-          <span>Prof. Yuki Tanaka</span>
-          <span class="read-time">9 min read</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="post-card">
-      <div class="post-img-wrap">
-        <div class="post-img-ph" style="background: linear-gradient(135deg,#1a1e28,#2a3a5a);">
-          <span>WORK</span>
-        </div>
-      </div>
-      <div class="post-body">
-        <span class="tag tag-ink">Work</span>
-        <div class="post-title">The Death of the Career Path (And Why That's Liberating)</div>
-        <p class="post-excerpt">Linear careers are over. What comes next might actually suit humans better.</p>
-        <div class="post-footer">
-          <span>Camille Portois</span>
-          <span class="read-time">6 min read</span>
-        </div>
-      </div>
-    </div>
-
   </div>
 </section>
 
-<!-- LONG READS -->
-<div class="long-reads">
-  <div class="section reveal">
-    <div class="section-header">
+<!-- ORDER FORM -->
+<section id="form" class="form-section reveal">
+  <div class="section-heading">
+    <div class="section-eyebrow">
+      <span data-lang="si">ඇනවුම</span><span data-lang="en">Place Order</span><span data-lang="ta">ஆர்டர் செய்யுங்கள்</span>
+    </div>
+    <h2 class="section-title">
+      <span data-lang="si">ඔබේ ඇණවුම ආරම්භ කරන්න</span>
+      <span data-lang="en">Start Your Order</span>
+      <span data-lang="ta">உங்கள் ஆர்டரை தொடங்குங்கள்</span>
+    </h2>
+  </div>
+
+  <div class="form-container">
+    <div class="form-header">
+      <div class="form-header-icon">📸</div>
       <div>
-        <div class="section-label">Deep Dives</div>
-        <h2 class="section-title">Long reads</h2>
+        <h2>
+          <span data-lang="si">AI ඡායාරූප ඇණවුම් පෝරමය</span>
+          <span data-lang="en">AI Photo Order Form</span>
+          <span data-lang="ta">AI புகைப்பட ஆர்டர் படிவம்</span>
+        </h2>
+        <p>
+          <span data-lang="si">සියලු ක්ෂේත්‍ර සම්පූර්ණ කරන්න. ☆ ලකුණු ඇති ඒවා අනිවාර්යයි.</span>
+          <span data-lang="en">Fill all fields. Fields marked ☆ are required.</span>
+          <span data-lang="ta">அனைத்து புலங்களையும் நிரப்பவும். ☆ குறிக்கப்பட்டவை கட்டாயம்.</span>
+        </p>
       </div>
-      <a class="view-all" style="color:var(--rust)">View all</a>
     </div>
-    <div class="long-reads-grid">
 
-      <div class="lr-card big">
-        <div class="lr-number">01</div>
-        <span class="tag tag-rust">Philosophy</span>
-        <div class="lr-title">The Slow Death of Boredom and Why We Should Mourn It</div>
-        <p class="lr-excerpt">Before smartphones, boredom was the canvas on which imagination painted its greatest works. We've wiped that canvas clean — and we're only just starting to notice the cost.</p>
-        <div class="lr-meta">
-          <span>N. Abramowitz</span>
-          <span>24 min read</span>
+    <div class="form-body">
+
+      <div class="alert alert-gold">
+        <span class="alert-icon">ℹ️</span>
+        <span>
+          <span data-lang="si">ඔබ ලබා දෙන ඡායාරූප <strong>රහස්‍ය</strong> ලෙස ගබඩා කෙරෙන අතර ඇනවුම සම්පූර්ණ වූ පසු මකා දමනු ලැබේ.</span>
+          <span data-lang="en">Your uploaded photos are kept <strong>confidential</strong> and deleted after order completion.</span>
+          <span data-lang="ta">நீங்கள் பதிவேற்றும் படங்கள் <strong>இரகசியமாக</strong> வைக்கப்படும், ஆர்டர் முடிந்த பிறகு நீக்கப்படும்.</span>
+        </span>
+      </div>
+
+      <!-- PERSONAL INFO -->
+      <div class="form-divider">
+        <span data-lang="si">පුද්ගලික තොරතුරු</span>
+        <span data-lang="en">Personal Information</span>
+        <span data-lang="ta">தனிப்பட்ட தகவல்</span>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="si">සම්පූර්ණ නම</span><span data-lang="en">Full Name</span><span data-lang="ta">முழு பெயர்</span>
+            <span class="req">☆</span>
+          </label>
+          <input class="form-input" type="text" id="fname" placeholder="e.g. Kasun Perera / கஸுன் பெரேரா">
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="si">ඊමේල් ලිපිනය</span><span data-lang="en">Email Address</span><span data-lang="ta">மின்னஞ்சல் முகவரி</span>
+            <span class="req">☆</span>
+            <span class="tip">
+              <span data-lang="si">ඡායාරූප ලැබෙන ස්ථානය</span>
+              <span data-lang="en">Photos sent here</span>
+              <span data-lang="ta">படங்கள் இங்கு அனுப்பப்படும்</span>
+            </span>
+          </label>
+          <input class="form-input" type="email" id="femail" placeholder="you@email.com">
         </div>
       </div>
 
-      <div class="lr-card">
-        <div class="lr-number">02</div>
-        <span class="tag tag-cream">Society</span>
-        <div class="lr-title">Post-Truth Was Always the Plan</div>
-        <p class="lr-excerpt">Tracing the deliberate architecture of confusion in modern political life.</p>
-        <div class="lr-meta"><span>R. Mensah</span><span>18 min</span></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="si">දුරකතන අංකය</span><span data-lang="en">Phone Number</span><span data-lang="ta">தொலைபேசி எண்</span>
+            <span class="req">☆</span>
+          </label>
+          <input class="form-input" type="tel" id="fphone" placeholder="+94 77 XXX XXXX / +91 98XXXXXXXX">
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="si">රට</span><span data-lang="en">Country</span><span data-lang="ta">நாடு</span>
+          </label>
+          <select class="form-select" id="fcountry">
+            <option value="">
+              -- <span data-lang="si">රටක් තෝරන්න</span><span data-lang="en">Select Country</span><span data-lang="ta">நாட்டை தேர்ந்தெடுக்கவும்</span> --
+            </option>
+            <option value="LK">🇱🇰 Sri Lanka</option>
+            <option value="IN">🇮🇳 India</option>
+            <option value="AU">🇦🇺 Australia</option>
+            <option value="UK">🇬🇧 United Kingdom</option>
+            <option value="US">🇺🇸 United States</option>
+            <option value="CA">🇨🇦 Canada</option>
+            <option value="DE">🇩🇪 Germany</option>
+            <option value="JP">🇯🇵 Japan</option>
+            <option value="SG">🇸🇬 Singapore</option>
+            <option value="AE">🇦🇪 UAE</option>
+            <option value="OTHER">🌍 Other</option>
+          </select>
+        </div>
       </div>
 
-      <div class="lr-card">
-        <div class="lr-number">03</div>
-        <span class="tag tag-cream">Design</span>
-        <div class="lr-title">The Tyranny of Good Taste</div>
-        <p class="lr-excerpt">How aesthetic consensus became a new form of social control.</p>
-        <div class="lr-meta"><span>S. Hartmann</span><span>12 min</span></div>
+      <!-- PHOTO TYPE -->
+      <div class="form-divider">
+        <span data-lang="si">ඡායාරූප වර්ගය</span>
+        <span data-lang="en">Photo Type</span>
+        <span data-lang="ta">புகைப்பட வகை</span>
       </div>
 
-      <div class="lr-card">
-        <div class="lr-number">04</div>
-        <span class="tag tag-cream">Biology</span>
-        <div class="lr-title">Your Microbiome Is Running Your Life</div>
-        <p class="lr-excerpt">The 38 trillion bacteria inside you have more influence than you'd like to admit.</p>
-        <div class="lr-meta"><span>Dr. L. Fernandez</span><span>15 min</span></div>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="si">ඡායාරූප ප්‍රවර්ගය</span><span data-lang="en">Photo Category</span><span data-lang="ta">புகைப்பட வகை</span>
+            <span class="req">☆</span>
+          </label>
+          <select class="form-select" id="fphotocat" onchange="updateSubType()">
+            <option value="">-- <span data-lang="si">ප්‍රවර්ගය</span><span data-lang="en">Select Category</span><span data-lang="ta">வகையை தேர்ந்தெடுக்கவும்</span> --</option>
+            <optgroup label="📋 ID / Official Photos">
+              <option value="visa">Visa Photo</option>
+              <option value="passport">Passport Photo</option>
+              <option value="nic">National ID (NIC)</option>
+              <option value="driving">Driving License</option>
+              <option value="student_id">Student ID</option>
+              <option value="work_id">Work / Staff ID</option>
+            </optgroup>
+            <optgroup label="💼 Professional">
+              <option value="linkedin">LinkedIn Profile Photo</option>
+              <option value="cv">CV / Resume Photo</option>
+              <option value="corporate">Corporate Portrait</option>
+              <option value="doctor">Doctor / Nurse Profile</option>
+              <option value="lawyer">Lawyer / Attorney</option>
+            </optgroup>
+            <optgroup label="✨ Creative / Personal">
+              <option value="social">Social Media Profile</option>
+              <option value="wedding">Wedding / Formal Portrait</option>
+              <option value="graduation">Graduation Photo</option>
+              <option value="artistic">Artistic Portrait</option>
+              <option value="model">Model Portfolio</option>
+            </optgroup>
+            <optgroup label="🎭 Specialty">
+              <option value="anime">Anime / Illustrated Style</option>
+              <option value="oil">Oil Painting Style</option>
+              <option value="vintage">Vintage Film Style</option>
+              <option value="baby">Baby / Child Photo</option>
+              <option value="pet">Pet Portrait</option>
+              <option value="custom">Custom (describe below)</option>
+            </optgroup>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="si">ලැබෙන රට (විසා/ගමන් බලපත්‍ර සඳහා)</span>
+            <span data-lang="en">Destination Country (for Visa/Passport)</span>
+            <span data-lang="ta">சேர்விப்பு நாடு (விசா/பாஸ்போர்ட்)</span>
+          </label>
+          <select class="form-select" id="fdestcountry">
+            <option value="none">N/A</option>
+            <option value="LK">🇱🇰 Sri Lanka</option>
+            <option value="US">🇺🇸 United States</option>
+            <option value="UK">🇬🇧 United Kingdom</option>
+            <option value="CA">🇨🇦 Canada</option>
+            <option value="AU">🇦🇺 Australia</option>
+            <option value="schengen">🇪🇺 Schengen (EU)</option>
+            <option value="IN">🇮🇳 India</option>
+            <option value="JP">🇯🇵 Japan</option>
+            <option value="SG">🇸🇬 Singapore</option>
+            <option value="AE">🇦🇪 UAE / Dubai</option>
+            <option value="OTHER">🌍 Other</option>
+          </select>
+        </div>
       </div>
 
-      <div class="lr-card">
-        <div class="lr-number">05</div>
-        <span class="tag tag-cream">History</span>
-        <div class="lr-title">The City That Reinvented Itself Every Century</div>
-        <p class="lr-excerpt">A 2,000-year urban story of collapse, adaptation, and radical reinvention.</p>
-        <div class="lr-meta"><span>P. Okonkwo</span><span>20 min</span></div>
+      <!-- QUANTITY & SIZE -->
+      <div class="form-row three">
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="si">ඡායාරූප ගණන</span><span data-lang="en">Number of Photos</span><span data-lang="ta">புகைப்படங்களின் எண்ணிக்கை</span>
+            <span class="req">☆</span>
+          </label>
+          <div class="qty-picker">
+            <button class="qty-btn" onclick="changeQty(-1)">−</button>
+            <input class="qty-val" type="number" id="fqty" value="1" min="1" max="100" readonly>
+            <button class="qty-btn" onclick="changeQty(1)">+</button>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="si">ළදරු ශෛලිය</span><span data-lang="en">Image Format</span><span data-lang="ta">படம் வடிவம்</span>
+          </label>
+          <select class="form-select" id="fformat">
+            <option value="jpg">JPG (Digital)</option>
+            <option value="png">PNG (Transparent BG)</option>
+            <option value="both">Both JPG + PNG</option>
+            <option value="pdf">PDF (Print Ready)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">
+            <span data-lang="si">ඡායාරූප ප්‍රමාණය</span><span data-lang="en">Photo Size / DPI</span><span data-lang="ta">புகைப்பட அளவு</span>
+          </label>
+          <select class="form-select" id="fsize">
+            <option value="standard">Standard (600×600px)</option>
+            <option value="hd">HD (1200×1200px)</option>
+            <option value="print">Print Ready (300 DPI)</option>
+            <option value="4k">4K Ultra (3000px+)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- BACKGROUND -->
+      <div class="form-divider">
+        <span data-lang="si">පසුබිම් සහ සැකසුම</span>
+        <span data-lang="en">Background & Customization</span>
+        <span data-lang="ta">பின்னணி & தனிப்பயனாக்கம்</span>
+      </div>
+
+      <div class="form-group" style="margin-bottom:20px;">
+        <label class="form-label">
+          <span data-lang="si">පසුබිම් වර්ණය / ශෛලිය</span>
+          <span data-lang="en">Background Color / Style</span>
+          <span data-lang="ta">பின்னணி நிறம் / பாணி</span>
+          <span class="req">☆</span>
+        </label>
+        <div class="check-grid" id="bgOptions">
+          <label class="check-item selected" onclick="selectCheck(this,'bg')"><input type="radio" name="bg" value="white"><div class="check-box">✓</div><div class="check-text"><span data-lang="si">සුදු පසුබිම</span><span data-lang="en">White BG</span><span data-lang="ta">வெள்ளை பின்னணி</span></div></label>
+          <label class="check-item" onclick="selectCheck(this,'bg')"><input type="radio" name="bg" value="blue"><div class="check-box"></div><div class="check-text"><span data-lang="si">නිල් පසුබිම</span><span data-lang="en">Blue BG</span><span data-lang="ta">நீல பின்னணி</span></div></label>
+          <label class="check-item" onclick="selectCheck(this,'bg')"><input type="radio" name="bg" value="grey"><div class="check-box"></div><div class="check-text"><span data-lang="si">අළු පසුබිම</span><span data-lang="en">Grey BG</span><span data-lang="ta">சாம்பல் பின்னணி</span></div></label>
+          <label class="check-item" onclick="selectCheck(this,'bg')"><input type="radio" name="bg" value="transparent"><div class="check-box"></div><div class="check-text"><span data-lang="si">විනිවිද</span><span data-lang="en">Transparent</span><span data-lang="ta">வெளிப்படையான</span></div></label>
+          <label class="check-item" onclick="selectCheck(this,'bg')"><input type="radio" name="bg" value="office"><div class="check-box"></div><div class="check-text"><span data-lang="si">කාර්යාල ශෛලිය</span><span data-lang="en">Office Scene</span><span data-lang="ta">அலுவலக காட்சி</span></div></label>
+          <label class="check-item" onclick="selectCheck(this,'bg')"><input type="radio" name="bg" value="custom"><div class="check-box"></div><div class="check-text"><span data-lang="si">අභිරුචි</span><span data-lang="en">Custom</span><span data-lang="ta">தனிப்பயன்</span></div></label>
+        </div>
+      </div>
+
+      <!-- ADVANCED CUSTOMIZATION TABS -->
+      <div class="form-group" style="margin-bottom:20px;">
+        <label class="form-label">
+          <span data-lang="si">සවිස්තර සකස් කිරීම</span>
+          <span data-lang="en">Advanced Customizations</span>
+          <span data-lang="ta">மேம்பட்ட தனிப்பயனாக்கங்கள்</span>
+        </label>
+        <div class="custom-panel">
+          <div class="custom-tabs">
+            <button class="custom-tab active" onclick="switchTab('attire',this)">
+              <span data-lang="si">ඇඳුම</span><span data-lang="en">Attire</span><span data-lang="ta">ஆடை</span>
+            </button>
+            <button class="custom-tab" onclick="switchTab('expression',this)">
+              <span data-lang="si">ඔbudu</span><span data-lang="en">Expression</span><span data-lang="ta">முக வெளிப்பாடு</span>
+            </button>
+            <button class="custom-tab" onclick="switchTab('lighting',this)">
+              <span data-lang="si">ආලෝකය</span><span data-lang="en">Lighting</span><span data-lang="ta">ஒளி</span>
+            </button>
+            <button class="custom-tab" onclick="switchTab('style',this)">
+              <span data-lang="si">ශෛලිය</span><span data-lang="en">Style</span><span data-lang="ta">பாணி</span>
+            </button>
+            <button class="custom-tab" onclick="switchTab('retouching',this)">
+              <span data-lang="si">රීටච්</span><span data-lang="en">Retouching</span><span data-lang="ta">ரீடச்சிங்</span>
+            </button>
+          </div>
+          <div class="custom-options active" id="tab-attire">
+            <div class="opt-item selected" onclick="toggleOpt(this)"><div class="opt-icon">👔</div><div class="opt-label"><span data-lang="si">ව්‍යාපාරික</span><span data-lang="en">Business</span><span data-lang="ta">வணிகம்</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">👕</div><div class="opt-label"><span data-lang="si">අනෞපචාරික</span><span data-lang="en">Casual</span><span data-lang="ta">சாதாரண</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">👘</div><div class="opt-label"><span data-lang="si">සාම්ප්‍රදායික</span><span data-lang="en">Traditional</span><span data-lang="ta">பாரம்பரியம்</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">🥼</div><div class="opt-label"><span data-lang="si">වෛද්‍ය / රෝහල</span><span data-lang="en">Medical / Lab</span><span data-lang="ta">மருத்துவ</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">⚖️</div><div class="opt-label"><span data-lang="si">නීති</span><span data-lang="en">Legal / Formal</span><span data-lang="ta">சட்ட</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">✍️</div><div class="opt-label"><span data-lang="si">ගෙදර ඇඳුම</span><span data-lang="en">Custom (describe)</span><span data-lang="ta">தனிப்பயன்</span></div></div>
+          </div>
+          <div class="custom-options" id="tab-expression">
+            <div class="opt-item selected" onclick="toggleOpt(this)"><div class="opt-icon">😊</div><div class="opt-label"><span data-lang="si">ස්වභාවික</span><span data-lang="en">Natural</span><span data-lang="ta">இயற்கையான</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">😐</div><div class="opt-label"><span data-lang="si">ස්ත්‍රී / රේඛීය</span><span data-lang="en">Neutral / Formal</span><span data-lang="ta">நடுநிலை</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">😄</div><div class="opt-label"><span data-lang="si">සිනාමුසු</span><span data-lang="en">Smiling</span><span data-lang="ta">சிரித்த</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">💪</div><div class="opt-label"><span data-lang="si">විශ්වාසදායක</span><span data-lang="en">Confident</span><span data-lang="ta">நம்பிக்கையான</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">🌸</div><div class="opt-label"><span data-lang="si">මෘදු</span><span data-lang="en">Soft/Gentle</span><span data-lang="ta">மென்மையான</span></div></div>
+          </div>
+          <div class="custom-options" id="tab-lighting">
+            <div class="opt-item selected" onclick="toggleOpt(this)"><div class="opt-icon">☀️</div><div class="opt-label"><span data-lang="si">ස්ටූඩියෝ</span><span data-lang="en">Studio</span><span data-lang="ta">ஸ்டுடியோ</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">🌤️</div><div class="opt-label"><span data-lang="si">ස්වභාවික</span><span data-lang="en">Natural Light</span><span data-lang="ta">இயற்கை ஒளி</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">🌆</div><div class="opt-label"><span data-lang="si">හිරු බැස යෑම</span><span data-lang="en">Golden Hour</span><span data-lang="ta">தங்க நேரம்</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">🌙</div><div class="opt-label"><span data-lang="si">ත්‍රාසජනක</span><span data-lang="en">Dramatic Dark</span><span data-lang="ta">நாடக இருள்</span></div></div>
+          </div>
+          <div class="custom-options" id="tab-style">
+            <div class="opt-item selected" onclick="toggleOpt(this)"><div class="opt-icon">📷</div><div class="opt-label"><span data-lang="si">ෆොටෝ ශෛලිය</span><span data-lang="en">Photorealistic</span><span data-lang="ta">புகைப்பட யதார்த்தம்</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">🎨</div><div class="opt-label"><span data-lang="si">තෙල් සිතුවම</span><span data-lang="en">Oil Painting</span><span data-lang="ta">எண்ணெய் ஓவியம்</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">📽️</div><div class="opt-label"><span data-lang="si">විண්ටේජ් ෆිල්ම්</span><span data-lang="en">Vintage Film</span><span data-lang="ta">விண்டேஜ் பிலிம்</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">✏️</div><div class="opt-label"><span data-lang="si">ජල වර්ණ</span><span data-lang="en">Watercolor</span><span data-lang="ta">நீர் வண்ணம்</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">🎌</div><div class="opt-label"><span data-lang="si">ඇනිමේ</span><span data-lang="en">Anime</span><span data-lang="ta">அனிமே</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">⚡</div><div class="opt-label"><span data-lang="si">HDR / Cinematic</span><span data-lang="en">Cinematic</span><span data-lang="ta">சினிமாடிக்</span></div></div>
+          </div>
+          <div class="custom-options" id="tab-retouching">
+            <div class="opt-item selected" onclick="toggleOpt(this)"><div class="opt-icon">✨</div><div class="opt-label"><span data-lang="si">ස්වභාවික ලෙස</span><span data-lang="en">Natural Look</span><span data-lang="ta">இயற்கை தோற்றம்</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">🌟</div><div class="opt-label"><span data-lang="si">සම සෝදාපාලු</span><span data-lang="en">Skin Smoothing</span><span data-lang="ta">தோல் மென்மை</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">👁️</div><div class="opt-label"><span data-lang="si">ඇස් සූදානම් කිරීම</span><span data-lang="en">Eye Enhancement</span><span data-lang="ta">கண் மேம்பாடு</span></div></div>
+            <div class="opt-item" onclick="toggleOpt(this)"><div class="opt-icon">💄</div><div class="opt-label"><span data-lang="si">සළු-ගල් ඉවත් කිරීම</span><span data-lang="en">Blemish Removal</span><span data-lang="ta">கோளாறு நீக்கம்</span></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPECIAL REQUEST -->
+      <div class="form-divider">
+        <span data-lang="si">විශේෂ ඉල්ලීම</span>
+        <span data-lang="en">Special Request</span>
+        <span data-lang="ta">சிறப்பு கோரிக்கை</span>
+      </div>
+
+      <div class="form-group" style="margin-bottom:20px;">
+        <label class="form-label">
+          <span data-lang="si">ඔබේ ඉල්ලීම විස්තරාත්මකව ලියන්න</span>
+          <span data-lang="en">Describe your requirements in detail</span>
+          <span data-lang="ta">உங்கள் தேவைகளை விரிவாக விவரிக்கவும்</span>
+          <span class="req">☆</span>
+        </label>
+        <textarea class="form-textarea" id="frequest" rows="5" placeholder="e.g. I need a US Visa photo, white background, formal business suit, natural smile, 2x2 inches standard size. Please make sure the face is centered and clearly visible. / e.g. ඇමරිකා විසා ඡායාරූපයක් අවශ්‍යයි, සුදු පසුබිම..."></textarea>
+      </div>
+
+      <!-- PHOTO UPLOAD -->
+      <div class="form-divider">
+        <span data-lang="si">ඡායාරූප ඉදිරිපත් කරන්න</span>
+        <span data-lang="en">Upload Your Photos</span>
+        <span data-lang="ta">உங்கள் படங்களை பதிவேற்றவும்</span>
+      </div>
+
+      <div class="form-group" style="margin-bottom:20px;">
+        <label class="form-label">
+          <span data-lang="si">ඡායාරූප (අවශ්‍ය 1, උපරිම 5)</span>
+          <span data-lang="en">Reference Photos (min 1, max 5)</span>
+          <span data-lang="ta">குறிப்பு படங்கள் (குறைந்தது 1, அதிகபட்சம் 5)</span>
+          <span class="req">☆</span>
+        </label>
+        <div class="upload-zone" id="uploadZone">
+          <input type="file" id="fileInput" accept="image/*" multiple onchange="handleFiles(this.files)">
+          <div class="upload-icon">📤</div>
+          <div class="upload-title">
+            <span data-lang="si">ඡායාරූප ඇදගෙන ඕනේ / ක්ලික් කරන්න</span>
+            <span data-lang="en">Drag & drop photos here or click to browse</span>
+            <span data-lang="ta">படங்களை இழுத்து விடவும் அல்லது கிளிக் செய்யவும்</span>
+          </div>
+          <div class="upload-sub">
+            <span data-lang="si">JPG, PNG, HEIC — අවශ්‍ය සෑම ඡායාරූපයකම ඔබේ මුහුණ පැහැදිලිව දිස්විය යුතුය</span>
+            <span data-lang="en">JPG, PNG, HEIC — Your face must be clearly visible in each photo</span>
+            <span data-lang="ta">JPG, PNG, HEIC — ஒவ்வொரு படத்திலும் உங்கள் முகம் தெளிவாக இருக்க வேண்டும்</span>
+          </div>
+          <span class="upload-limit">Max 5 photos · 10MB each</span>
+        </div>
+        <div class="preview-row" id="previewRow"></div>
+      </div>
+
+      <!-- URGENCY -->
+      <div class="form-group" style="margin-bottom:0;">
+        <label class="form-label">
+          <span data-lang="si">ඉදිරිපත් කිරීමේ ගති</span>
+          <span data-lang="en">Urgency / Delivery Priority</span>
+          <span data-lang="ta">அவசரம் / டெலிவரி முன்னுரிமை</span>
+        </label>
+        <div class="check-grid" id="urgencyOptions">
+          <label class="check-item" onclick="selectCheck(this,'urgency'); updatePrice()"><input type="radio" name="urgency" value="standard"><div class="check-box"></div><div class="check-text"><span data-lang="si">සාමාන්‍ය (24-48 පැය)</span><span data-lang="en">Standard (24-48h)</span><span data-lang="ta">சாதாரண (24-48 மணி)</span></div></label>
+          <label class="check-item selected" onclick="selectCheck(this,'urgency'); updatePrice()"><input type="radio" name="urgency" value="express"><div class="check-box">✓</div><div class="check-text"><span data-lang="si">Express (12 පැය)</span><span data-lang="en">Express (12 hours)</span><span data-lang="ta">எக்ஸ்பிரஸ் (12 மணி)</span></div></label>
+          <label class="check-item" onclick="selectCheck(this,'urgency'); updatePrice()"><input type="radio" name="urgency" value="rush"><div class="check-box"></div><div class="check-text"><span data-lang="si">ඉතා ශීඝ්‍ර (3-6 පැය)</span><span data-lang="en">Rush (3-6 hours)</span><span data-lang="ta">ரஷ் (3-6 மணி)</span></div></label>
+        </div>
+      </div>
+
+      <!-- SUBMIT -->
+      <div class="submit-row">
+        <div class="price-estimate">
+          <div class="price-label">
+            <span data-lang="si">ගෙවීම් ඇස්තමේන්තුව</span>
+            <span data-lang="en">Price Estimate</span>
+            <span data-lang="ta">விலை மதிப்பீடு</span>
+          </div>
+          <div class="price-val" id="priceDisplay">LKR 750</div>
+          <div class="price-note">
+            <span data-lang="si">ඇනවුමෙන් පසු නිතිපතා ගෙවිය යුතු</span>
+            <span data-lang="en">Final price confirmed after order review</span>
+            <span data-lang="ta">ஆர்டர் மதிப்பாய்வுக்குப் பிறகு இறுதி விலை</span>
+          </div>
+        </div>
+        <button class="btn-submit" onclick="submitOrder()" id="submitBtn">
+          <span>✦</span>
+          <span data-lang="si">ඇණවුම ඉදිරිපත් කරන්න</span>
+          <span data-lang="en">Submit Order</span>
+          <span data-lang="ta">ஆர்டர் சமர்ப்பிக்கவும்</span>
+        </button>
       </div>
 
     </div>
   </div>
-</div>
+</section>
 
-<!-- BROWSE + SIDEBAR -->
-<section class="section reveal">
-  <div class="section-header">
-    <div>
-      <div class="section-label">Browse</div>
-      <h2 class="section-title">More to explore</h2>
+<!-- TICKET TRACKER -->
+<section id="tracker" class="tracker-section reveal">
+  <div class="tracker-inner">
+    <div class="section-heading">
+      <div class="section-eyebrow">
+        <span data-lang="si">ටිකට් ට්‍රැකර්</span><span data-lang="en">Order Tracker</span><span data-lang="ta">ஆர்டர் டிராக்கர்</span>
+      </div>
+      <h2 class="section-title">
+        <span data-lang="si">ඔබේ ඇනවුම නිරීක්ෂණය කරන්න</span>
+        <span data-lang="en">Track Your Order Status</span>
+        <span data-lang="ta">உங்கள் ஆர்டர் நிலையை கண்காணிக்கவும்</span>
+      </h2>
+      <p class="section-sub">
+        <span data-lang="si">ඔබේ ටිකට් අංකය ඇතුළත් කර ඇනවුමේ ප්‍රගතිය බලන්න</span>
+        <span data-lang="en">Enter your ticket number to check progress instantly</span>
+        <span data-lang="ta">உங்கள் டிக்கெட் எண்ணை உள்ளிட்டு நிலையை சரிபார்க்கவும்</span>
+      </p>
+    </div>
+    <div class="tracker-form">
+      <input class="form-input" type="text" id="ticketInput" placeholder="e.g. PCX-2026-003847">
+      <button class="btn btn-gold" onclick="trackTicket()">
+        🔍 <span data-lang="si">ට්‍රැක් කරන්න</span><span data-lang="en">Track</span><span data-lang="ta">கண்காணிக்க</span>
+      </button>
+    </div>
+    <div class="tracker-result" id="trackerResult">
+      <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:20px;">
+        <div>
+          <div style="font-size:.72rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:4px;">Ticket</div>
+          <div style="font-family:var(--display);font-size:1.2rem;font-weight:800;" id="t-ticketnum">PCX-2026-003847</div>
+        </div>
+        <span class="status-badge status-progress" id="t-status">🔄 In Progress</span>
+      </div>
+      <div class="tracker-steps">
+        <div class="t-step done" id="ts1"><div class="t-step-dot">✓</div><div class="t-step-label"><span data-lang="si">ලැබිණ</span><span data-lang="en">Received</span><span data-lang="ta">பெறப்பட்டது</span></div></div>
+        <div class="t-connector done" id="tc1"></div>
+        <div class="t-step done" id="ts2"><div class="t-step-dot">✓</div><div class="t-step-label"><span data-lang="si">සමාලෝචනය</span><span data-lang="en">Reviewed</span><span data-lang="ta">மதிப்பாய்வு</span></div></div>
+        <div class="t-connector done" id="tc2"></div>
+        <div class="t-step active" id="ts3"><div class="t-step-dot">✦</div><div class="t-step-label"><span data-lang="si">AI නිර්මාණය</span><span data-lang="en">AI Creation</span><span data-lang="ta">AI உருவாக்கம்</span></div></div>
+        <div class="t-connector" id="tc3"></div>
+        <div class="t-step" id="ts4"><div class="t-step-dot">4</div><div class="t-step-label"><span data-lang="si">QC</span><span data-lang="en">Quality Check</span><span data-lang="ta">தர சரிபார்ப்பு</span></div></div>
+        <div class="t-connector" id="tc4"></div>
+        <div class="t-step" id="ts5"><div class="t-step-dot">5</div><div class="t-step-label"><span data-lang="si">ලබා දෙයි</span><span data-lang="en">Delivered</span><span data-lang="ta">டெலிவரி</span></div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:.82rem;">
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;">
+          <div style="color:var(--text3);font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">
+            <span data-lang="si">ඇනවුම් කළ දිනය</span><span data-lang="en">Order Date</span><span data-lang="ta">ஆர்டர் தேதி</span>
+          </div>
+          <div style="font-weight:600;" id="t-date">March 18, 2026</div>
+        </div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;">
+          <div style="color:var(--text3);font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">
+            <span data-lang="si">ඇස්තමේන්තු කාලය</span><span data-lang="en">ETA</span><span data-lang="ta">மதிப்பீட்டு நேரம்</span>
+          </div>
+          <div style="font-weight:600;color:var(--gold);" id="t-eta">March 18, 2026 — 6:00 PM</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SUPPORT -->
+<section id="support" class="support-section reveal">
+  <div class="section-heading">
+    <div class="section-eyebrow">
+      <span data-lang="si">සහාය</span><span data-lang="en">Support</span><span data-lang="ta">ஆதரவு</span>
+    </div>
+    <h2 class="section-title">
+      <span data-lang="si">ඔබට සහාය අවශ්‍යද?</span>
+      <span data-lang="en">Need Help? We're Here</span>
+      <span data-lang="ta">உதவி தேவையா? நாங்கள் இங்கே</span>
+    </h2>
+    <p class="section-sub">
+      <span data-lang="si">ඔබේ ටිකට් අංකය සමඟ ඕනෑම ගැටළුවක් ගෙන ඒ.</span>
+      <span data-lang="en">Contact us with your ticket number for any issue or delay.</span>
+      <span data-lang="ta">எந்த சிக்கலுக்கும் உங்கள் டிக்கெட் எண்ணுடன் தொடர்பு கொள்ளுங்கள்.</span>
+    </p>
+  </div>
+  <div class="support-grid">
+    <div class="support-card">
+      <div class="support-icon icon-gold">💬</div>
+      <div class="support-title">
+        <span data-lang="si">WhatsApp සහාය</span>
+        <span data-lang="en">WhatsApp Support</span>
+        <span data-lang="ta">WhatsApp ஆதரவு</span>
+      </div>
+      <div class="support-desc">
+        <span data-lang="si">ශීඝ්‍ර ප්‍රශ්න සඳහා +94 77 123 4567 (WhatsApp) හරහා අප අමතන්න. ටිකට් අංකය සහ ගැටළුව කෙළිනා.</span>
+        <span data-lang="en">Fastest response — message us on WhatsApp at +94 77 123 4567 with your ticket number and issue.</span>
+        <span data-lang="ta">மிகவேகமான பதில் — +94 77 123 4567 WhatsApp இல் டிக்கெட் எண்ணுடன் தொடர்பு கொள்ளுங்கள்.</span>
+      </div>
+      <a class="support-link" href="https://wa.me/94771234567" target="_blank">
+        <span data-lang="si">WhatsApp සබැඳිය</span>
+        <span data-lang="en">Open WhatsApp</span>
+        <span data-lang="ta">WhatsApp திறக்க</span>
+      </a>
+    </div>
+    <div class="support-card">
+      <div class="support-icon icon-blue">📧</div>
+      <div class="support-title">
+        <span data-lang="si">ඊමේල් සහාය</span>
+        <span data-lang="en">Email Support</span>
+        <span data-lang="ta">மின்னஞ்சல் ஆதரவு</span>
+      </div>
+      <div class="support-desc">
+        <span data-lang="si">support@pixcraft.ai ලිපිනයට ඔබේ ටිකට් අංකය සහිතව ලියන්න. 4 පැය ඇතුළත පිළිතුරු ලැබේ.</span>
+        <span data-lang="en">Email support@pixcraft.ai with your ticket number. We respond within 4 hours.</span>
+        <span data-lang="ta">support@pixcraft.ai க்கு டிக்கெட் எண்ணுடன் மின்னஞ்சல் அனுப்புங்கள். 4 மணி நேரத்தில் பதில்.</span>
+      </div>
+      <a class="support-link" href="mailto:support@pixcraft.ai">
+        <span data-lang="si">ඊමේල් යවන්න</span>
+        <span data-lang="en">Send Email</span>
+        <span data-lang="ta">மின்னஞ்சல் அனுப்புக</span>
+      </a>
+    </div>
+    <div class="support-card">
+      <div class="support-icon icon-teal">🔄</div>
+      <div class="support-title">
+        <span data-lang="si">නිදහස් නැවත කිරීම</span>
+        <span data-lang="en">Free Revision Request</span>
+        <span data-lang="ta">இலவச திருத்தம்</span>
+      </div>
+      <div class="support-desc">
+        <span data-lang="si">ඡායාරූප ශ්‍රේෂ්ඨ නැත්නම් 1 නිදහස් නැවත කිරීමක් ලැබේ. ඔබේ ටිකට් + ගැටළු සහිතව ලිහිල්ව ඉල්ලන්න.</span>
+        <span data-lang="en">Not happy with the result? Get 1 free revision. Just contact with your ticket number and feedback.</span>
+        <span data-lang="ta">முடிவால் மகிழ்ச்சியில்லையா? 1 இலவச திருத்தம் பெறுங்கள். டிக்கெட் மற்றும் கருத்துடன் தொடர்பு கொள்ளுங்கள்.</span>
+      </div>
+      <a class="support-link" href="mailto:revisions@pixcraft.ai">
+        <span data-lang="si">නැවත ඉල්ලන්න</span>
+        <span data-lang="en">Request Revision</span>
+        <span data-lang="ta">திருத்தம் கோரு</span>
+      </a>
+    </div>
+    <div class="support-card">
+      <div class="support-icon icon-green">📞</div>
+      <div class="support-title">
+        <span data-lang="si">දුරකතන සහාය</span>
+        <span data-lang="en">Phone Support</span>
+        <span data-lang="ta">தொலைபேசி ஆதரவு</span>
+      </div>
+      <div class="support-desc">
+        <span data-lang="si">+94 11 456 7890 — සඳු-සිකු 9AM-6PM (IST). සිංහල, ඉංග්‍රීසි, දෙමළ භාෂාවලින් සේවා ලැබේ.</span>
+        <span data-lang="en">+94 11 456 7890 — Mon-Fri 9AM-6PM IST. Sinhala, English & Tamil spoken.</span>
+        <span data-lang="ta">+94 11 456 7890 — திங்கள்-வெள்ளி 9AM-6PM. சிங்களம், ஆங்கிலம் & தமிழில் சேவை.</span>
+      </div>
+      <a class="support-link" href="tel:+94114567890">
+        <span data-lang="si">දුරකතනය කරන්න</span>
+        <span data-lang="en">Call Now</span>
+        <span data-lang="ta">இப்போது அழைக்க</span>
+      </a>
     </div>
   </div>
-  <div class="main-sidebar">
+</section>
 
-    <!-- ARTICLE LIST -->
-    <div class="article-list">
-      <div class="article-item">
-        <div class="article-thumb"><div class="thumb-ph" style="background:linear-gradient(135deg,#c2421f,#7a2010)"><span>01</span></div></div>
-        <div class="article-info">
-          <span class="tag tag-rust" style="font-size:.6rem;padding:3px 8px;">Technology</span>
-          <div class="article-title">Open Source AI Models Are Changing Who Controls the Future</div>
-          <div class="article-meta"><span>Felix Nguyen</span><span>·</span><span>Mar 14</span><span>·</span><span>11 min</span></div>
+<!-- FAQ -->
+<section id="faq" class="faq-section reveal">
+  <div class="faq-inner">
+    <div class="section-heading">
+      <div class="section-eyebrow">FAQ</div>
+      <h2 class="section-title">
+        <span data-lang="si">නිතර ඇසෙන ප්‍රශ්න</span>
+        <span data-lang="en">Frequently Asked Questions</span>
+        <span data-lang="ta">அடிக்கடி கேட்கப்படும் கேள்விகள்</span>
+      </h2>
+    </div>
+    <div class="faq-list">
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span data-lang="si">AI ඡායාරූප නිර්මාණ සේවාව යනු කුමක්ද?</span>
+          <span data-lang="en">What exactly is the AI Photo Creation service?</span>
+          <span data-lang="ta">AI புகைப்பட உருவாக்கம் சேவை என்றால் என்ன?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          <span data-lang="si">ඔබ ලබා දෙන ඡායාරූප ශ්‍රේෂ්ඨ AI නිර්මාණ මෙවලම් භාවිත කර ඔබේ සැබෑ මුහුණ ආශ්‍ර කරමින් ව්‍යාජ රහිත, ඉහළ ගුණාත්මක, ප්‍රෝ ඡායාරූප නිර්මාණය කිරීමේ සේවාවකි. විසා, ගමන් බලපත්‍ර, ව්‍යාපාරික, සමාජ, ළදරු, ශිල්ප ශෛලීය සහ ඕනෑම වර්ගයක් ඇතුළත් වේ.</span>
+          <span data-lang="en">We use advanced AI tools to generate professional-quality photos based on your real face from the photos you send us. This includes visa, passport, business, social media, artistic and any custom style you need — delivered digitally to your email.</span>
+          <span data-lang="ta">நீங்கள் அனுப்பும் படங்களில் உள்ள உங்கள் உண்மையான முகத்தை அடிப்படையாக கொண்டு, மேம்பட்ட AI கருவிகளைப் பயன்படுத்தி தொழில்முறை தரமான படங்களை உருவாக்குகிறோம்.</span>
         </div>
       </div>
-
-      <div class="article-item">
-        <div class="article-thumb"><div class="thumb-ph" style="background:linear-gradient(135deg,#2a4a2a,#1a2e1a)"><span>02</span></div></div>
-        <div class="article-info">
-          <span class="tag tag-ink" style="font-size:.6rem;padding:3px 8px;">Environment</span>
-          <div class="article-title">Rewilding Europe: How Nature Is Reclaiming Abandoned Land</div>
-          <div class="article-meta"><span>Ingrid Solberg</span><span>·</span><span>Mar 13</span><span>·</span><span>8 min</span></div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span data-lang="si">ඡායාරූප ලැබීමට කොපමණ කාලයක් ගතවේ?</span>
+          <span data-lang="en">How long does it take to receive the photos?</span>
+          <span data-lang="ta">புகைப்படங்கள் பெற எவ்வளவு நேரம் ஆகும்?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          <span data-lang="si">ඇස්තමේන්තු කාලය ප්‍රමුඛතාව අනුව වෙනස් වේ: සාමාන්‍ය (24-48 පැය), Express (12 පැය), Rush (3-6 පැය). ඇස්තමේන්තු කාලයට පෙර ලබා දීමට අපි සෑම විටෙකම ලක්ෂ්‍ය කරගනිමු.</span>
+          <span data-lang="en">Depends on priority: Standard (24–48h), Express (12h), Rush (3–6h). We always aim to deliver before the estimate. You can track live using your ticket number.</span>
+          <span data-lang="ta">முன்னுரிமையைப் பொறுத்தது: சாதாரண (24-48 மணி), எக்ஸ்பிரஸ் (12 மணி), ரஷ் (3-6 மணி). மதிப்பீட்டிற்கு முன்பே டெலிவரி செய்ய எப்போதும் இலக்காக கொள்கிறோம்.</span>
         </div>
       </div>
-
-      <div class="article-item">
-        <div class="article-thumb"><div class="thumb-ph" style="background:linear-gradient(135deg,#2a2a4a,#1a1a2e)"><span>03</span></div></div>
-        <div class="article-info">
-          <span class="tag tag-ink" style="font-size:.6rem;padding:3px 8px;">Mental Health</span>
-          <div class="article-title">The Therapists Are Burning Out Too — Who Heals the Healers?</div>
-          <div class="article-meta"><span>Grace Obi-Williams</span><span>·</span><span>Mar 12</span><span>·</span><span>7 min</span></div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span data-lang="si">ඡායාරූප රහස්‍ය ලෙස ගබඩා කෙරෙනවාද?</span>
+          <span data-lang="en">Are my uploaded photos kept private and secure?</span>
+          <span data-lang="ta">என் பதிவேற்றிய படங்கள் தனிப்பட்டதாக வைக்கப்படுகிறதா?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          <span data-lang="si">ඔව්. ඔබ ලබා දෙන ඡායාරූප සම්පූර්ණ රහස්‍ය ලෙස ගබඩා කෙරෙන අතර ඇනවුම ලබා දීමෙන් 48 පැය ඇතුළත මකා දමනු ලැබේ. ඒවා කිසිදු ඩිජිටල් ශ්‍රී ලාංකිකයෙකු හෝ ශ්‍රේෂ්ඨ ලාංකිකයෙකු සමඟ බෙදා නොගනී.</span>
+          <span data-lang="en">Yes. All uploaded photos are encrypted, handled with full confidentiality, and permanently deleted within 48 hours of order delivery. They are never shared, published, or used for any other purpose.</span>
+          <span data-lang="ta">ஆம். பதிவேற்றிய அனைத்து படங்களும் குறியாக்கம் செய்யப்பட்டு, ஆர்டர் டெலிவரியிலிருந்து 48 மணி நேரத்திற்குள் நிரந்தரமாக நீக்கப்படும்.</span>
         </div>
       </div>
-
-      <div class="article-item">
-        <div class="article-thumb"><div class="thumb-ph" style="background:linear-gradient(135deg,#4a2a1a,#2e1a0e)"><span>04</span></div></div>
-        <div class="article-info">
-          <span class="tag tag-rust" style="font-size:.6rem;padding:3px 8px;">Culture</span>
-          <div class="article-title">The Rise of the Anti-Influencer: Why Authenticity Is the New Flex</div>
-          <div class="article-meta"><span>Zara Patel</span><span>·</span><span>Mar 11</span><span>·</span><span>5 min</span></div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span data-lang="si">ඡායාරූප ව්‍යාජ රහිතව ලබා දෙනවාද?</span>
+          <span data-lang="en">Will the photos look like the real me, not AI-generated?</span>
+          <span data-lang="ta">படங்கள் AI-உருவாக்கம் போல் தெரியாமல் இருக்குமா?</span>
+          <span class="faq-icon">+</span>
+        </div>
+        <div class="faq-a">
+          <span data-lang="si">ඔව්. ශ්‍රේෂ්ඨ photorealistic AI ශිල්ප ශෛලීන් භාවිත කරමින් ඔබේ සැබෑ මුහුණෙහි ලක්ෂණ, ව්‍යූහය, ශෛලිය ආශ්‍ර කරමින් ශ්‍රේෂ්ඨ ලෙස ලැබෙන ඡායාරූප නිර්මාණය කෙරෙනු ලැබේ.</span>
+          <span data-lang="en">Yes. We use top-tier photorealistic AI techniques that faithfully reproduce your actual facial features, skin tone, and structure. The result looks like a professional photograph of you — not AI-generated.</span>
+          <span data-lang="ta">ஆம். உங்கள் உண்மையான முக அம்சங்கள், தோல் நிறம் மற்றும் அமைப்பை நம்பகமாக மீண்டும் உருவாக்கும் சிறந்த AI நுட்பங்களைப் பயன்படுத்துகிறோம்.</span>
         </div>
       </div>
-
-      <div class="article-item">
-        <div class="article-thumb"><div class="thumb-ph" style="background:linear-gradient(135deg,#1a3a4a,#0e2230)"><span>05</span></div></div>
-        <div class="article-info">
-          <span class="tag tag-ink" style="font-size:.6rem;padding:3px 8px;">Science</span>
-          <div class="article-title">Quantum Computing Just Passed a Milestone That Changes Everything</div>
-          <div class="article-meta"><span>Dr. H. Park</span><span>·</span><span>Mar 10</span><span>·</span><span>10 min</span></div>
+      <div class="faq-item">
+        <div class="faq-q" onclick="toggleFaq(this)">
+          <span data-lang="si">නිදහස් නැවත කිරීමේ ප්‍රතිපත්තිය කුමක්ද?</span>
+          <span data-lang="en">What is the free revision policy?</span>
+          <span data-lang="ta">இலவச திருத்த கொள்கை என்ன?</span>
+          <span class="faq-icon">+</span>
         </div>
-      </div>
-
-      <div class="article-item">
-        <div class="article-thumb"><div class="thumb-ph" style="background:linear-gradient(135deg,#3a2a1a,#5a3a1a)"><span>06</span></div></div>
-        <div class="article-info">
-          <span class="tag tag-ink" style="font-size:.6rem;padding:3px 8px;">History</span>
-          <div class="article-title">How a 17th-Century Plague Shaped the Modern Financial System</div>
-          <div class="article-meta"><span>Marco de Bruin</span><span>·</span><span>Mar 9</span><span>·</span><span>13 min</span></div>
+        <div class="faq-a">
+          <span data-lang="si">ශ්‍රේෂ්ඨ ඇනවුමකට 1 නිදහස් නැවත කිරීමක් ලැබේ. ලබා දීමෙන් 48 පැය ඇතුළත ටිකට් + ගැටළු ලිහිල් ලෙස support@pixcraft.ai ලිපිනයට ලිවිය හැකිය.</span>
+          <span data-lang="en">Every order includes 1 free revision. If you're not satisfied, contact us within 48 hours of delivery with your ticket number and specific feedback. We'll redo it at no extra charge.</span>
+          <span data-lang="ta">ஒவ்வொரு ஆர்டரிலும் 1 இலவச திருத்தம் உள்ளது. டெலிவரியிலிருந்து 48 மணி நேரத்திற்குள் திருத்தம் கோரலாம்.</span>
         </div>
       </div>
     </div>
-
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-
-      <div class="sidebar-widget">
-        <div class="widget-title">Search</div>
-        <div class="search-wrap">
-          <input class="search-input" type="text" placeholder="Search stories…">
-          <button class="search-btn">⌕</button>
-        </div>
-      </div>
-
-      <div class="sidebar-widget">
-        <div class="widget-title">Topics</div>
-        <div class="topics-list">
-          <span class="topic-pill active">All</span>
-          <span class="topic-pill">Technology</span>
-          <span class="topic-pill">Culture</span>
-          <span class="topic-pill">Science</span>
-          <span class="topic-pill">Philosophy</span>
-          <span class="topic-pill">Health</span>
-          <span class="topic-pill">Design</span>
-          <span class="topic-pill">Politics</span>
-        </div>
-      </div>
-
-      <div class="sidebar-widget">
-        <div class="widget-title">Newsletter</div>
-        <p style="font-size:.8rem;color:var(--muted);margin-bottom:14px;line-height:1.65;">Hand-picked reads every Sunday. No spam, ever.</p>
-        <div class="newsletter-form">
-          <input class="email-input" type="email" placeholder="you@example.com">
-          <button class="btn-primary" style="font-size:.75rem;padding:11px 20px;">Subscribe Free</button>
-        </div>
-      </div>
-
-      <div class="sidebar-widget">
-        <div class="widget-title">Trending</div>
-        <div class="popular-list">
-          <div class="popular-item">
-            <span class="popular-num">01</span>
-            <span class="popular-title">The Attention Economy Has Already Won — Here's How to Fight Back</span>
-          </div>
-          <div class="popular-item">
-            <span class="popular-num">02</span>
-            <span class="popular-title">Open Source AI Models Are Changing Who Controls the Future</span>
-          </div>
-          <div class="popular-item">
-            <span class="popular-num">03</span>
-            <span class="popular-title">The Slow Death of Boredom and Why We Should Mourn It</span>
-          </div>
-          <div class="popular-item">
-            <span class="popular-num">04</span>
-            <span class="popular-title">What Coffee Shop Culture Says About Modern Loneliness</span>
-          </div>
-        </div>
-      </div>
-
-    </aside>
   </div>
 </section>
 
@@ -1272,101 +1617,291 @@
   <div class="footer-inner">
     <div class="footer-top">
       <div class="footer-brand">
-        <a class="logo"><span></span>INKWELL</a>
-        <p>A publication for the curious mind. Stories that challenge, essays that provoke, ideas that endure.</p>
+        <a class="logo"><div class="logo-icon" style="-webkit-text-fill-color:initial;">✦</div>PixCraft AI</a>
+        <p>
+          <span data-lang="si">ශ්‍රී ලංකාවේ #1 AI ඡායාරූප සේවාව. 12,000+ ශ්‍රේෂ්ඨ ඡායාරූප. රහස්‍ය. ශ්‍රේෂ්ඨ ගුණාත්මක. ශීඝ්‍ර ලබාදීම.</span>
+          <span data-lang="en">Sri Lanka's leading AI photo creation service. 12,000+ photos crafted. Confidential, fast, and professional.</span>
+          <span data-lang="ta">இலங்கையின் முன்னணி AI புகைப்பட உருவாக்கம் சேவை. 12,000+ படங்கள். இரகசியமான, வேகமான மற்றும் தொழில்முறை.</span>
+        </p>
       </div>
       <div>
-        <div class="footer-col-title">Explore</div>
+        <div class="footer-col-title">
+          <span data-lang="si">සේවාවන්</span><span data-lang="en">Services</span><span data-lang="ta">சேவைகள்</span>
+        </div>
         <ul class="footer-links">
-          <li><a>Latest Stories</a></li>
-          <li><a>Long Reads</a></li>
-          <li><a>Topics</a></li>
-          <li><a>Featured Writers</a></li>
+          <li><a><span data-lang="si">විසා ඡායාරූප</span><span data-lang="en">Visa Photos</span><span data-lang="ta">விசா படங்கள்</span></a></li>
+          <li><a><span data-lang="si">ගමන් බලපත්‍ර</span><span data-lang="en">Passport Photos</span><span data-lang="ta">பாஸ்போர்ட் படங்கள்</span></a></li>
+          <li><a><span data-lang="si">ව්‍යාපාරික ඡායාරූප</span><span data-lang="en">Business Portraits</span><span data-lang="ta">வணிக புகைப்படங்கள்</span></a></li>
+          <li><a><span data-lang="si">සෞජ්‍ය ශෛලිය</span><span data-lang="en">Artistic Styles</span><span data-lang="ta">கலை பாணிகள்</span></a></li>
         </ul>
       </div>
       <div>
-        <div class="footer-col-title">Company</div>
+        <div class="footer-col-title">
+          <span data-lang="si">සබැඳි</span><span data-lang="en">Quick Links</span><span data-lang="ta">விரைவு இணைப்புகள்</span>
+        </div>
         <ul class="footer-links">
-          <li><a>About</a></li>
-          <li><a>Careers</a></li>
-          <li><a>Advertise</a></li>
-          <li><a>Press Kit</a></li>
+          <li><a onclick="scrollTo('form')"><span data-lang="si">ඇනවුම</span><span data-lang="en">Place Order</span><span data-lang="ta">ஆர்டர்</span></a></li>
+          <li><a onclick="scrollTo('tracker')"><span data-lang="si">ට්‍රැකර්</span><span data-lang="en">Track Order</span><span data-lang="ta">ட்ராக்</span></a></li>
+          <li><a onclick="scrollTo('support')"><span data-lang="si">සහාය</span><span data-lang="en">Support</span><span data-lang="ta">ஆதரவு</span></a></li>
+          <li><a onclick="scrollTo('faq')">FAQ</a></li>
         </ul>
       </div>
       <div>
-        <div class="footer-col-title">Legal</div>
+        <div class="footer-col-title">
+          <span data-lang="si">සම්බන්ධ</span><span data-lang="en">Contact</span><span data-lang="ta">தொடர்பு</span>
+        </div>
         <ul class="footer-links">
-          <li><a>Privacy Policy</a></li>
-          <li><a>Terms of Use</a></li>
-          <li><a>Cookie Settings</a></li>
+          <li><a href="mailto:support@pixcraft.ai">support@pixcraft.ai</a></li>
+          <li><a href="tel:+94771234567">+94 77 123 4567</a></li>
+          <li><a href="https://wa.me/94771234567">WhatsApp</a></li>
+          <li><a>Colombo, Sri Lanka 🇱🇰</a></li>
         </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <span>© 2026 Inkwell Publication. All rights reserved.</span>
-      <div class="social-links">
-        <a>Twitter</a>
-        <a>Instagram</a>
-        <a>LinkedIn</a>
-        <a>RSS</a>
+      <div class="footer-copy">© 2026 PixCraft AI. 
+        <span data-lang="si">සියලු හිමිකම් ආරක්ෂිතයි.</span>
+        <span data-lang="en">All rights reserved.</span>
+        <span data-lang="ta">அனைத்து உரிமைகளும் பாதுகாக்கப்பட்டவை.</span>
+      </div>
+      <div class="footer-langs">
+        <span onclick="setLang('si')">සිංහල</span>
+        <span onclick="setLang('en')">English</span>
+        <span onclick="setLang('ta')">தமிழ்</span>
       </div>
     </div>
   </div>
 </footer>
 
+<!-- TICKET SUCCESS MODAL -->
+<div class="modal-overlay" id="ticketModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="ticket-success">✓</div>
+    <div class="ticket-modal-title">
+      <span data-lang="si">ඇනවුම සාර්ථකයි! 🎉</span>
+      <span data-lang="en">Order Submitted! 🎉</span>
+      <span data-lang="ta">ஆர்டர் சமர்ப்பிக்கப்பட்டது! 🎉</span>
+    </div>
+    <div class="ticket-modal-sub">
+      <span data-lang="si">ඔබේ ඇනවුම ලැබිණ. ටිකට් අංකය ආරක්ෂා කරන්න.</span>
+      <span data-lang="en">Your order has been received. Save your ticket number below.</span>
+      <span data-lang="ta">உங்கள் ஆர்டர் பெறப்பட்டது. கீழே உள்ள டிக்கெட் எண்ணை சேமிக்கவும்.</span>
+    </div>
+    <div class="ticket-card">
+      <div class="ticket-row">
+        <span class="ticket-key"><span data-lang="si">ටිකට් අංකය</span><span data-lang="en">Ticket Number</span><span data-lang="ta">டிக்கெட் எண்</span></span>
+        <span class="ticket-num" id="modalTicketNum">PCX-2026-007241</span>
+      </div>
+      <div class="ticket-row">
+        <span class="ticket-key"><span data-lang="si">ඇනවුම් කළ නම</span><span data-lang="en">Name</span><span data-lang="ta">பெயர்</span></span>
+        <span class="ticket-val" id="modalName">—</span>
+      </div>
+      <div class="ticket-row">
+        <span class="ticket-key"><span data-lang="si">ඊමේල්</span><span data-lang="en">Email</span><span data-lang="ta">மின்னஞ்சல்</span></span>
+        <span class="ticket-val" id="modalEmail">—</span>
+      </div>
+      <div class="ticket-row">
+        <span class="ticket-key"><span data-lang="si">ඡායාරූප ගණන</span><span data-lang="en">Photos Requested</span><span data-lang="ta">படங்கள்</span></span>
+        <span class="ticket-val" id="modalQty">1</span>
+      </div>
+      <div class="ticket-row">
+        <span class="ticket-key"><span data-lang="si">ඇනවුම් ශ්‍රේෂ්ඨ</span><span data-lang="en">Status</span><span data-lang="ta">நிலை</span></span>
+        <span class="status-badge status-pending">⏳ <span data-lang="si">ලැබිණ</span><span data-lang="en">Received</span><span data-lang="ta">பெறப்பட்டது</span></span>
+      </div>
+    </div>
+    <div class="eta-bar">
+      <div class="eta-icon">⏰</div>
+      <div class="eta-text">
+        <div class="eta-label">
+          <span data-lang="si">ගணිත ලබාදීම් කාලය</span>
+          <span data-lang="en">Estimated Completion</span>
+          <span data-lang="ta">மதிப்பீட்டு நேரம்</span>
+        </div>
+        <div class="eta-time" id="modalEta">—</div>
+        <div class="eta-note">
+          <span data-lang="si">ලබා දීම ඊමේල් ලිපිනයට ලැබේ</span>
+          <span data-lang="en">Delivery will be sent to your email</span>
+          <span data-lang="ta">டெலிவரி உங்கள் மின்னஞ்சலுக்கு அனுப்பப்படும்</span>
+        </div>
+      </div>
+    </div>
+    <div class="ticket-actions">
+      <button class="btn btn-outline" onclick="copyTicket()">
+        📋 <span data-lang="si">ටිකට් කොපි</span><span data-lang="en">Copy Ticket</span><span data-lang="ta">டிக்கெட் நகல்</span>
+      </button>
+      <button class="btn btn-gold" onclick="closeModal(); scrollTo('tracker')">
+        🔍 <span data-lang="si">ට්‍රැක් කරන්න</span><span data-lang="en">Track Order</span><span data-lang="ta">ட்ராக்</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 <script>
-  // ─── MOBILE NAV ───
-  function openMobileNav() { document.getElementById('mobileNav').classList.add('open'); }
-  function closeMobileNav() { document.getElementById('mobileNav').classList.remove('open'); }
-
-  // ─── SCROLL REVEAL ───
-  const revealEls = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
-  }, { threshold: 0.08 });
-  revealEls.forEach(el => observer.observe(el));
-
-  // ─── TOPIC PILLS ───
-  document.querySelectorAll('.topic-pill').forEach(pill => {
-    pill.addEventListener('click', function() {
-      document.querySelectorAll('.topic-pill').forEach(p => p.classList.remove('active'));
-      this.classList.add('active');
-    });
+// ─── LANGUAGE ───
+let currentLang = 'si';
+function setLang(lang) {
+  currentLang = lang;
+  document.body.classList.remove('lang-si','lang-en','lang-ta');
+  document.body.classList.add('lang-' + lang);
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.lang-btn').forEach(b => {
+    if (b.textContent.trim() === (lang==='si'?'සිංහල':lang==='en'?'EN':'தமிழ்')) b.classList.add('active');
   });
+}
+setLang('si');
 
-  // ─── SEARCH FOCUS EFFECT ───
-  const searchInput = document.querySelector('.search-input');
-  if (searchInput) {
-    searchInput.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') {
-        searchInput.style.borderColor = 'var(--rust)';
-        setTimeout(() => searchInput.style.borderColor = '', 600);
-      }
-    });
+// ─── SCROLL TO ───
+function scrollTo(id) {
+  document.getElementById(id)?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function closeMobile() { document.getElementById('mobileMenu').classList.remove('open'); }
+
+// ─── SCROLL REVEAL ───
+const revealEls = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver(entries => entries.forEach(e => {if(e.isIntersecting)e.target.classList.add('visible');}),{threshold:.06});
+revealEls.forEach(el => io.observe(el));
+
+// ─── QUANTITY ───
+function changeQty(d) {
+  const el = document.getElementById('fqty');
+  let v = parseInt(el.value) + d;
+  if(v<1)v=1; if(v>200)v=200;
+  el.value = v;
+  updatePrice();
+}
+
+// ─── CHECK GROUPS ───
+function selectCheck(el, group) {
+  document.querySelectorAll(`[onclick*="selectCheck"][onclick*="${group}"]`).forEach(e => {
+    e.classList.remove('selected');
+    e.querySelector('.check-box').textContent = '';
+  });
+  el.classList.add('selected');
+  el.querySelector('.check-box').textContent = '✓';
+  updatePrice();
+}
+
+function toggleOpt(el) {
+  el.classList.toggle('selected');
+}
+
+// ─── CUSTOM TABS ───
+function switchTab(id, btn) {
+  document.querySelectorAll('.custom-options').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.custom-tab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('tab-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── PRICE CALC ───
+function updatePrice() {
+  const qty = parseInt(document.getElementById('fqty').value)||1;
+  const urgency = document.querySelector('[name="urgency"]:checked')?.value || 'express';
+  const basePrice = urgency === 'standard' ? 500 : urgency === 'express' ? 750 : 1500;
+  const total = basePrice * qty;
+  document.getElementById('priceDisplay').textContent = `LKR ${total.toLocaleString()}`;
+}
+updatePrice();
+
+// ─── FILE UPLOAD ───
+let uploadedFiles = [];
+function handleFiles(files) {
+  const remaining = 5 - uploadedFiles.length;
+  const toAdd = Math.min(files.length, remaining);
+  for(let i=0;i<toAdd;i++) uploadedFiles.push(files[i]);
+  renderPreviews();
+}
+function renderPreviews() {
+  const row = document.getElementById('previewRow');
+  row.innerHTML = '';
+  uploadedFiles.forEach((f,i) => {
+    const url = URL.createObjectURL(f);
+    const wrap = document.createElement('div');
+    wrap.className = 'preview-wrap';
+    wrap.innerHTML = `<img src="${url}" class="preview-thumb"><button class="remove-thumb" onclick="removeFile(${i})">✕</button>`;
+    row.appendChild(wrap);
+  });
+}
+function removeFile(i) {
+  uploadedFiles.splice(i,1);
+  renderPreviews();
+}
+
+// DRAG
+const uz = document.getElementById('uploadZone');
+uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('drag');});
+uz.addEventListener('dragleave',()=>uz.classList.remove('drag'));
+uz.addEventListener('drop',e=>{e.preventDefault();uz.classList.remove('drag');handleFiles(e.dataTransfer.files);});
+
+// ─── SUBMIT ───
+function submitOrder() {
+  const name = document.getElementById('fname').value.trim();
+  const email = document.getElementById('femail').value.trim();
+  const phone = document.getElementById('fphone').value.trim();
+  const request = document.getElementById('frequest').value.trim();
+  const cat = document.getElementById('fphotocat').value;
+  const qty = document.getElementById('fqty').value;
+
+  if(!name||!email||!phone||!request||!cat) {
+    const msgs = {si:'කරුණාකර සියලු අනිවාර්ය ක්ෂේත්‍ර සම්පූර්ණ කරන්න ☆',en:'Please fill all required fields marked ☆',ta:'☆ குறிக்கப்பட்ட அனைத்து கட்டாய புலங்களையும் நிரப்பவும்'};
+    alert(msgs[currentLang]); return;
+  }
+  if(uploadedFiles.length===0) {
+    const msgs = {si:'කරුණාකර අවම වශයෙන් ඡායාරූපයක් යොමු කරන්න',en:'Please upload at least 1 photo',ta:'குறைந்தது 1 படத்தை பதிவேற்றவும்'};
+    alert(msgs[currentLang]); return;
   }
 
-  // ─── NEWSLETTER SUBMIT ───
-  const emailInput = document.querySelector('.email-input');
-  document.querySelector('.newsletter-form .btn-primary')?.addEventListener('click', function() {
-    const val = emailInput?.value?.trim();
-    if (val && val.includes('@')) {
-      this.textContent = '✓ Subscribed!';
-      this.style.background = '#2a6a2a';
-      emailInput.value = '';
-      setTimeout(() => { this.textContent = 'Subscribe Free'; this.style.background = ''; }, 3000);
-    } else {
-      emailInput.style.borderColor = 'var(--rust)';
-      setTimeout(() => emailInput.style.borderColor = '', 1000);
-    }
-  });
+  const ticket = 'PCX-2026-' + String(Math.floor(Math.random()*900000)+100000);
+  const urgency = document.querySelector('[name="urgency"]:checked')?.value || 'express';
+  const hrs = urgency==='standard'?48:urgency==='express'?12:6;
+  const eta = new Date(Date.now() + hrs*3600000);
+  const etaStr = eta.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) + ' — ' + eta.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
 
-  // ─── STAGGERED CARD ENTRANCE ───
-  const cards = document.querySelectorAll('.post-card, .lr-card, .article-item');
-  cards.forEach((card, i) => {
-    card.style.animationDelay = `${i * 0.06}s`;
-    card.classList.add('reveal');
-    observer.observe(card);
+  document.getElementById('modalTicketNum').textContent = ticket;
+  document.getElementById('modalName').textContent = name;
+  document.getElementById('modalEmail').textContent = email;
+  document.getElementById('modalQty').textContent = qty + ' photo(s)';
+  document.getElementById('modalEta').textContent = etaStr;
+
+  document.getElementById('ticketModal').classList.add('open');
+  document.getElementById('ticketInput').value = ticket;
+}
+
+function closeModal() { document.getElementById('ticketModal').classList.remove('open'); }
+
+function copyTicket() {
+  const t = document.getElementById('modalTicketNum').textContent;
+  navigator.clipboard.writeText(t).then(()=>{
+    const msgs = {si:'ටිකට් අංකය කොපි විය!',en:'Ticket copied!',ta:'டிக்கெட் நகலெடுக்கப்பட்டது!'};
+    alert(msgs[currentLang]);
   });
+}
+
+// ─── TICKET TRACKER ───
+function trackTicket() {
+  const val = document.getElementById('ticketInput').value.trim();
+  if(!val) { alert('Enter a ticket number'); return; }
+  const result = document.getElementById('trackerResult');
+  document.getElementById('t-ticketnum').textContent = val;
+  document.getElementById('t-date').textContent = new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+  const eta = new Date(Date.now()+8*3600000);
+  document.getElementById('t-eta').textContent = eta.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}) + ' — ' + eta.toLocaleTimeString('en-US',{hour:'2-digit',minute:'2-digit'});
+  result.classList.add('show');
+}
+
+// ─── FAQ ───
+function toggleFaq(el) {
+  const item = el.parentElement;
+  const wasOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item.open').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen) item.classList.add('open');
+}
+
+// close modal on overlay click
+document.getElementById('ticketModal').addEventListener('click',function(e){
+  if(e.target===this)closeModal();
+});
 </script>
 </body>
 </html>
