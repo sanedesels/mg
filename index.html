@@ -16,29 +16,26 @@ font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif
 body{
 background:#000;
 color:#fff;
-scroll-behavior:smooth;
 line-height:1.7;
 }
 
-/* NAVBAR */
+/* NAV */
 nav{
 position:fixed;
 top:0;
 width:100%;
-padding:20px 40px;
+padding:22px 40px;
 display:flex;
 justify-content:space-between;
 align-items:center;
-background:rgba(0,0,0,0.75);
-backdrop-filter:blur(12px);
+background:#000;
 border-bottom:1px solid #111;
 z-index:1000;
 }
 
 nav h1{
-font-size:15px;
 letter-spacing:3px;
-font-weight:600;
+font-size:15px;
 }
 
 nav ul{
@@ -51,7 +48,7 @@ nav a{
 color:#aaa;
 text-decoration:none;
 font-size:13px;
-transition:.25s ease;
+transition:.3s;
 }
 
 nav a:hover{
@@ -70,90 +67,107 @@ text-align:center;
 
 .hero img{
 width:min(720px,90vw);
-margin-bottom:30px;
-animation:heroFade 1.4s ease;
+margin-bottom:25px;
 }
 
 .hero h2{
 letter-spacing:8px;
 font-weight:300;
 opacity:.8;
-animation:heroFade 1.8s ease;
 }
 
-/* SECTIONS */
+/* SECTION */
 section{
 padding:120px 15%;
-border-top:1px solid #0a0a0a;
+border-top:1px solid #111;
 }
 
 .section-title{
-font-size:34px;
-font-weight:500;
-letter-spacing:1px;
+font-size:36px;
 margin-bottom:30px;
+text-align:center;
 }
 
-.section-text{
-font-size:16px;
-color:#bdbdbd;
-max-width:900px;
-}
-
-/* PARAGRAPH BLOCK */
-.section-text,
-.custom{
-background:linear-gradient(180deg,#0a0a0a,#050505);
-padding:30px;
+/* PARAGRAPH CARD */
+.paragraph-card{
+background:#050505;
 border:1px solid #111;
-border-radius:14px;
-margin-top:20px;
-transition:.4s ease;
+padding:35px;
+border-radius:16px;
+max-width:900px;
+margin:0 auto;
+color:#ccc;
+transition:.3s;
 }
 
-.section-text:hover,
-.custom:hover{
-border-color:#222;
-transform:translateY(-2px);
+.paragraph-card:hover{
+border-color:#fff;
 }
 
-/* LIST */
-ul.custom{
-padding-left:40px;
+/* CENTER LIST */
+.center-list{
+display:grid;
+gap:14px;
+max-width:700px;
+margin:30px auto 0 auto;
 }
 
-ul.custom li{
-margin-bottom:10px;
+.center-list div{
+background:#050505;
+border:1px solid #111;
+padding:16px 20px;
+text-align:center;
+border-radius:10px;
+color:#ddd;
+transition:.3s;
+}
+
+.center-list div:hover{
+border-color:#fff;
+transform:translateY(-3px);
+}
+
+/* QUOTE BLOCKS */
+.quote-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+gap:20px;
+margin-top:40px;
+}
+
+.quote{
+border-left:3px solid #fff;
+padding:20px;
+background:#050505;
+color:#ccc;
+transition:.3s;
+}
+
+.quote:hover{
+background:#0a0a0a;
 }
 
 /* IMAGE GRID */
 .image-grid{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:24px;
+gap:20px;
 margin-top:40px;
 }
 
 .image-box{
-background:#0a0a0a;
-aspect-ratio:1/1;
-overflow:hidden;
 border:1px solid #111;
 border-radius:14px;
-transition:.4s ease;
+overflow:hidden;
 }
 
 .image-box img{
 width:100%;
 height:100%;
+aspect-ratio:1/1;
 object-fit:cover;
 filter:grayscale(100%);
-transition:.6s ease;
-}
-
-.image-box:hover{
-transform:translateY(-6px);
-border-color:#333;
+transition:.5s;
 }
 
 .image-box:hover img{
@@ -165,7 +179,7 @@ transform:scale(1.05);
 .team{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-gap:24px;
+gap:20px;
 margin-top:40px;
 }
 
@@ -173,8 +187,6 @@ margin-top:40px;
 border:1px solid #111;
 border-radius:14px;
 overflow:hidden;
-background:#050505;
-transition:.4s ease;
 }
 
 .member img{
@@ -182,12 +194,6 @@ width:100%;
 height:260px;
 object-fit:cover;
 filter:grayscale(100%);
-transition:.5s ease;
-}
-
-.member:hover{
-transform:translateY(-6px);
-border-color:#333;
 }
 
 .member:hover img{
@@ -195,17 +201,27 @@ filter:grayscale(0);
 }
 
 .member div{
-padding:20px;
+padding:18px;
 text-align:center;
-font-size:14px;
-letter-spacing:1px;
 }
 
-/* ANIMATIONS */
+/* CONTACT */
+.contact{
+text-align:center;
+}
+
+.contact-card{
+border:1px solid #fff;
+padding:40px;
+max-width:600px;
+margin:0 auto;
+border-radius:16px;
+}
+
 .fade{
 opacity:0;
 transform:translateY(40px);
-transition:1s cubic-bezier(.2,.65,.3,1);
+transition:1s;
 }
 
 .fade.show{
@@ -213,16 +229,9 @@ opacity:1;
 transform:translateY(0);
 }
 
-@keyframes heroFade{
-from{opacity:0; transform:translateY(30px);}
-to{opacity:1; transform:translateY(0);}
-}
-
-/* MOBILE */
 @media(max-width:768px){
 nav ul{display:none;}
 section{padding:90px 8%;}
-.section-title{font-size:26px;}
 }
 </style>
 </head>
@@ -238,6 +247,7 @@ section{padding:90px 8%;}
 <li><a href="#services">Services</a></li>
 <li><a href="#company">Company</a></li>
 <li><a href="#team">Team</a></li>
+<li><a href="#contact">Contact</a></li>
 </ul>
 </nav>
 
@@ -248,88 +258,69 @@ section{padding:90px 8%;}
 
 <section id="about" class="fade">
 <div class="section-title">What is Morela Global</div>
-<div class="section-text">
+<div class="paragraph-card">
 Morela Global is a multinational parent company that manages and operates multiple subsidiary companies across a wide range of industries. The organization focuses on innovation, global development, and delivering diverse services that improve everyday life, businesses, and future technologies.
+
 <br><br>
 Morela Global acts as the central leadership and strategic hub, while its sub-companies specialize in individual sectors.
-</div>
-
-<div class="image-grid">
-<div class="image-box"><img src="https://picsum.photos/500?1"></div>
-<div class="image-box"><img src="https://picsum.photos/500?2"></div>
-<div class="image-box"><img src="https://picsum.photos/500?3"></div>
 </div>
 </section>
 
 <section id="goal" class="fade">
 <div class="section-title">Our Goal</div>
-<ul class="custom">
-<li>Become a global leader in multi-industry innovation</li>
-<li>Develop advanced technology and scientific research</li>
-<li>Improve quality of life through diversified services</li>
-<li>Strengthen global security and infrastructure</li>
-<li>Build sustainable and future-ready solutions</li>
-<li>Expand worldwide through strategic subsidiaries</li>
-</ul>
 
-<div class="image-grid">
-<div class="image-box"><img src="https://picsum.photos/500?4"></div>
-<div class="image-box"><img src="https://picsum.photos/500?5"></div>
-<div class="image-box"><img src="https://picsum.photos/500?6"></div>
+<div class="quote-grid">
+<div class="quote">Become a global leader in multi-industry innovation</div>
+<div class="quote">Develop advanced technology and scientific research</div>
+<div class="quote">Improve quality of life through diversified services</div>
+<div class="quote">Strengthen global security and infrastructure</div>
+<div class="quote">Build sustainable and future-ready solutions</div>
+<div class="quote">Expand worldwide through strategic subsidiaries</div>
 </div>
+
 </section>
 
 <section id="what" class="fade">
 <div class="section-title">What We Are</div>
-<ul class="custom">
-<li>A multinational holding company</li>
-<li>A multi-industry service provider</li>
-<li>An innovation-driven organization</li>
-<li>A global network of specialized subsidiaries</li>
-<li>A future-focused research and development group</li>
-</ul>
 
-<div class="image-grid">
-<div class="image-box"><img src="https://picsum.photos/500?7"></div>
-<div class="image-box"><img src="https://picsum.photos/500?8"></div>
-<div class="image-box"><img src="https://picsum.photos/500?9"></div>
+<div class="center-list">
+<div>A multinational holding company</div>
+<div>A multi-industry service provider</div>
+<div>An innovation-driven organization</div>
+<div>A global network of specialized subsidiaries</div>
+<div>A future-focused research and development group</div>
 </div>
 </section>
 
 <section id="services" class="fade">
 <div class="section-title">Our Services</div>
-<ul class="custom">
-<li>Technology - AI, Robotics, Software, Cloud</li>
-<li>Entertainment - Film, Music, Gaming</li>
-<li>Food & Agriculture - Production & Distribution</li>
-<li>Health & Medical - Hospitals & Research</li>
-<li>Finance - Digital Banking & Fintech</li>
-<li>Science & Research - Biotechnology & Space</li>
-<li>Security - Cybersecurity & Infrastructure</li>
-<li>Military & Defense - Defense Technology</li>
-</ul>
 
-<div class="image-grid">
-<div class="image-box"><img src="https://picsum.photos/500?10"></div>
-<div class="image-box"><img src="https://picsum.photos/500?11"></div>
-<div class="image-box"><img src="https://picsum.photos/500?12"></div>
-<div class="image-box"><img src="https://picsum.photos/500?13"></div>
+<div class="center-list">
+<div>Technology — AI, Robotics, Software</div>
+<div>Entertainment — Film, Music, Gaming</div>
+<div>Food & Agriculture — Production</div>
+<div>Health & Medical — Hospitals</div>
+<div>Finance — Digital Banking</div>
+<div>Science & Research — Biotechnology</div>
+<div>Security — Cybersecurity</div>
+<div>Military & Defense — Defense Technology</div>
 </div>
+
 </section>
 
 <section id="company" class="fade">
 <div class="section-title">About Our Company</div>
-<div class="section-text">
+
+<div class="paragraph-card">
 Morela Global is committed to building a powerful global ecosystem of companies that work together to deliver excellence across industries.
+
 <br><br>
-Vision: To become one of the world’s most influential multi-industry multinational corporations.
+<b>Vision:</b> To become one of the world’s most influential multi-industry multinational corporations.
+
 <br><br>
-Mission: To innovate, lead, and provide high-quality services through diverse global subsidiaries.
+<b>Mission:</b> To innovate, lead, and provide high-quality services through diverse global subsidiaries.
 </div>
 
-<div class="image-grid">
-<div class="image-box"><img src="https://picsum.photos/500?14"></div>
-</div>
 </section>
 
 <section id="team" class="fade">
@@ -337,23 +328,40 @@ Mission: To innovate, lead, and provide high-quality services through diverse gl
 
 <div class="team">
 <div class="member">
-<img src="https://picsum.photos/400?15">
+<img src="https://picsum.photos/400?1">
 <div>Founder<br>Saneth De Silva</div>
 </div>
 
 <div class="member">
-<img src="https://picsum.photos/400?16">
+<img src="https://picsum.photos/400?2">
 <div>Global Strategy</div>
 </div>
 
 <div class="member">
-<img src="https://picsum.photos/400?17">
+<img src="https://picsum.photos/400?3">
 <div>Operations</div>
 </div>
 
 <div class="member">
-<img src="https://picsum.photos/400?18">
+<img src="https://picsum.photos/400?4">
 <div>Innovation</div>
+</div>
+</div>
+
+</section>
+
+<section id="contact" class="fade">
+<div class="section-title">Contact</div>
+
+<div class="contact">
+<div class="contact-card">
+Morela Global<br><br>
+Founder: Saneth De Silva<br>
+Established: 2026<br>
+Type: Multinational Parent Company<br><br>
+
+Email: contact@morelaglobal.com<br>
+Website: morelaglobal.com
 </div>
 </div>
 
