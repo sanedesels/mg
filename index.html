@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Morela Global</title>
 
+<!-- FAVICON -->
+<link rel="icon" type="image/png" href="Compact Intertwined Graphic Symbol.png">
+
 <style>
 *{
 margin:0;
@@ -26,16 +29,11 @@ top:0;
 width:100%;
 padding:22px 40px;
 display:flex;
-justify-content:space-between;
+justify-content:flex-end; /* logo text removed */
 align-items:center;
 background:#000;
 border-bottom:1px solid #111;
 z-index:1000;
-}
-
-nav h1{
-letter-spacing:3px;
-font-size:15px;
 }
 
 nav ul{
@@ -92,22 +90,21 @@ text-align:center;
 .paragraph{
 max-width:900px;
 margin:0 auto;
-background:#050505;
-border:1px solid #111;
+background:#0f0f0f;
+border:1px solid #222;
 padding:40px;
 border-radius:16px;
-color:#ccc;
-text-align:left;
+color:#ddd;
 }
 
 .paragraph-center{
 text-align:center;
-margin-top:20px;
+margin-top:25px;
 color:#fff;
 font-weight:500;
 }
 
-/* GRID BLOCKS */
+/* GRID */
 .grid{
 display:grid;
 gap:20px;
@@ -122,17 +119,20 @@ grid-template-columns:repeat(3,1fr);
 grid-template-columns:repeat(4,1fr);
 }
 
+/* BLOCK */
 .block{
-border:1px solid #111;
+border:1px solid #222;
 border-radius:14px;
 overflow:hidden;
-background:#050505;
+background:#0f0f0f;
 transition:.3s;
 }
 
 .block:hover{
 border-color:#fff;
 transform:translateY(-4px);
+background:#141414;
+box-shadow:0 0 0 1px #fff inset;
 }
 
 .block img{
@@ -153,18 +153,6 @@ font-size:14px;
 color:#ddd;
 }
 
-/* CONTACT */
-.contact{
-text-align:center;
-}
-
-.contact-box{
-border:1px solid #fff;
-padding:40px;
-display:inline-block;
-border-radius:16px;
-}
-
 /* TEAM */
 .team{
 display:grid;
@@ -174,9 +162,10 @@ margin-top:40px;
 }
 
 .member{
-border:1px solid #111;
+border:1px solid #222;
 border-radius:14px;
 overflow:hidden;
+background:#0f0f0f;
 }
 
 .member img{
@@ -195,6 +184,19 @@ padding:18px;
 text-align:center;
 }
 
+/* CONTACT */
+.contact{
+text-align:center;
+}
+
+.contact-box{
+border:1px solid #fff;
+padding:40px;
+display:inline-block;
+border-radius:16px;
+background:#0f0f0f;
+}
+
 /* ANIMATION */
 .fade{
 opacity:0;
@@ -211,7 +213,7 @@ transform:translateY(0);
 .grid-3{grid-template-columns:1fr;}
 .grid-4{grid-template-columns:1fr;}
 .team{grid-template-columns:1fr;}
-nav ul{display:none;}
+nav ul{flex-wrap:wrap; justify-content:center;}
 }
 </style>
 </head>
@@ -219,7 +221,6 @@ nav ul{display:none;}
 <body>
 
 <nav>
-<h1>MORELA GLOBAL</h1>
 <ul>
 <li><a href="#about">About</a></li>
 <li><a href="#goal">Goals</a></li>
@@ -313,7 +314,6 @@ A global ecosystem designed for innovation, growth, and future technologies.
 </div>
 
 </div>
-
 </section>
 
 <section id="company" class="fade">
@@ -328,7 +328,6 @@ Vision: To become one of the world’s most influential multi-industry multinati
 <br><br>
 Mission: To innovate, lead, and provide high-quality services through diverse global subsidiaries.
 </div>
-
 </section>
 
 <section id="team" class="fade">
@@ -340,7 +339,6 @@ Mission: To innovate, lead, and provide high-quality services through diverse gl
 <div class="member"><img src="https://picsum.photos/400?11"><div>Operations</div></div>
 <div class="member"><img src="https://picsum.photos/400?12"><div>Innovation</div></div>
 </div>
-
 </section>
 
 <section id="contact" class="fade">
@@ -351,7 +349,6 @@ Mission: To innovate, lead, and provide high-quality services through diverse gl
 contact@morelaglobal.com
 </div>
 </div>
-
 </section>
 
 <script>
