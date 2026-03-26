@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Morela Global</title>
 
-<!-- FAVICON -->
 <link rel="icon" type="image/png" href="Compact Intertwined Graphic Symbol.png">
 
 <style>
@@ -29,11 +28,17 @@ top:0;
 width:100%;
 padding:22px 40px;
 display:flex;
-justify-content:flex-end; /* logo text removed */
+justify-content:space-between;
 align-items:center;
 background:#000;
 border-bottom:1px solid #111;
 z-index:1000;
+}
+
+nav h1{
+letter-spacing:3px;
+font-size:14px;
+font-weight:500;
 }
 
 nav ul{
@@ -213,7 +218,7 @@ transform:translateY(0);
 .grid-3{grid-template-columns:1fr;}
 .grid-4{grid-template-columns:1fr;}
 .team{grid-template-columns:1fr;}
-nav ul{flex-wrap:wrap; justify-content:center;}
+nav ul{display:none;}
 }
 </style>
 </head>
@@ -221,6 +226,7 @@ nav ul{flex-wrap:wrap; justify-content:center;}
 <body>
 
 <nav>
+<h1>MORELA GLOBAL</h1>
 <ul>
 <li><a href="#about">About</a></li>
 <li><a href="#goal">Goals</a></li>
@@ -265,7 +271,6 @@ A global ecosystem designed for innovation, growth, and future technologies.
 <div class="block"><div class="block-content">Strategic subsidiaries</div></div>
 <div class="block"><div class="block-content">Innovation-driven growth</div></div>
 </div>
-
 </section>
 
 <section id="services" class="fade">
